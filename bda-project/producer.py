@@ -29,7 +29,9 @@ from typing import Iterator, Optional
 
 import pandas as pd
 from kafka import KafkaProducer
-from kafka.errors import KafkaError, NoBrokersAvailable
+from kafka.errors import KafkaError
+from kafka.errors import NoBrokersAvailable
+
 
 from config import DATASET, KAFKA, LOGGING
 
