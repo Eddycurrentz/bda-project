@@ -1,0 +1,129 @@
+// ============================================================
+//  REAL-TIME SOCIAL MEDIA SENTIMENT DASHBOARD — DAX MEASURES
+//  Paste each block via:  Modeling → New Measure
+//  Table name assumed: sentiment_results_enriched
+// ============================================================
+
+
+// ── KPI CARDS ──────────────────────────────────────────────
+
+Total Tweets =
+COUNTROWS(sentiment_results_enriched)
+
+Positive Tweets =
+CALCULATE(
+    COUNTROWS(sentiment_results_enriched),
+    sentiment_results_enriched[sentiment] = "Positive"
+)
+
+Negative Tweets =
+CALCULATE(
+    COUNTROWS(sentiment_results_enriched),
+    sentiment_results_enriched[sentiment] = "Negative"
+)
+
+Neutral Tweets =
+CALCULATE(
+    COUNTROWS(sentiment_results_enriched),
+    sentiment_results_enriched[sentiment] = "Neutral"
+)
+
+Average Polarity =
+AVERAGE(sentiment_results_enriched[polarity])
+
+Average Subjectivity =
+AVERAGE(sentiment_results_enriched[subjectivity])
+
+Average Confidence =
+AVERAGE(sentiment_results_enriched[confidence])
+
+
+// ── PERCENTAGE MEASURES ────────────────────────────────────
+
+Positive % =
+DIVIDE([Positive Tweets], [Total Tweets], 0)
+
+Negative % =
+DIVIDE([Negative Tweets], [Total Tweets], 0)
+
+Neutral % =
+DIVIDE([Neutral Tweets], [Total Tweets], 0)
+
+// Formatted as percentage string for card visual
+Positive % Label =
+FORMAT([Positive %], "0.0%")
+
+Negative % Label =
+FORMAT([Negative %], "0.0%")
+
+
+// ── SENTIMENT SCORE (Weighted) ─────────────────────────────
+// Converts avg polarity (-1 to 1) → 0-100 score for gauge visual
+
+Sentiment Score =
+VAR RawAvg = AVERAGE(sentiment_results_enriched[polarity])
+RETURN
+ROUND((RawAvg + 1) / 2 * 100, 1)
+
+
+// ── BRAND-LEVEL MEASURES ───────────────────────────────────
+
+Brand Positive % =
+DIVIDE(
+    CALCULATE(COUNTROWS(sentiment_results_enriched), sentiment_results_enriched[sentiment] = "Positive"),
+    COUNTROWS(sentiment_results_enriched),
+    0
+)
+
+Brand Net Sentiment =
+DIVIDE(
+    CALCULATE(COUNTROWS(sentiment_results_enriched), sentiment_results_enriched[sentiment] = "Positive")
+    - CALCULATE(COUNTROWS(sentiment_results_enriched), sentiment_results_enriched[sentiment] = "Negative"),
+    COUNTROWS(sentiment_results_enriched),
+    0
+)
+
+
+// ── TIME INTELLIGENCE ──────────────────────────────────────
+
+Tweets Last 30s =
+CALCULATE(
+    COUNTROWS(sentiment_results_enriched),
+    DATESINPERIOD(
+        sentiment_results_enriched[timestamp],
+        LASTDATE(sentiment_results_enriched[timestamp]),
+        -30,
+        SECOND
+    )
+)
+
+Rolling Avg Polarity =
+AVERAGEX(
+    DATESINPERIOD(
+        sentiment_results_enriched[timestamp],
+        LASTDATE(sentiment_results_enriched[timestamp]),
+        -5,
+        MINUTE
+    ),
+    sentiment_results_enriched[polarity]
+)
+
+
+// ── CONDITIONAL FORMATTING COLOR ──────────────────────────
+// Use in "Background color" / "Font color" rules on table visual
+
+Sentiment Color =
+SWITCH(
+    SELECTEDVALUE(sentiment_results_enriched[sentiment]),
+    "Positive", "#27AE60",
+    "Negative", "#E74C3C",
+    "Neutral",  "#95A5A6",
+    "#BDC3C7"
+)
+
+Polarity Color =
+IF(
+    SELECTEDVALUE(sentiment_results_enriched[polarity]) >= 0,
+    "#27AE60",
+    "#E74C3C"
+)

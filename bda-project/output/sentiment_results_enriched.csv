@@ -1,0 +1,31 @@
+timestamp,tweet,clean_tweet,polarity,subjectivity,sentiment,confidence,brand,polarity_bucket
+2026-08-04 09:00:00,I am coming to the borders and I will kill you all,coming borders kill,0.0,0.0,Neutral,0.0,Other,Neutral
+2026-08-04 09:00:07,im getting on borderlands and i will kill you all,im getting borderlands kill,0.0,0.0,Neutral,0.0,Borderlands,Neutral
+2026-08-04 09:00:14,im coming on borderlands and i will murder you all,im coming borderlands murder,0.0,0.0,Neutral,0.0,Borderlands,Neutral
+2026-08-04 09:00:21,So bad. This game is absolutely terrible and full of bugs,bad game absolutely terrible full bugs,-0.4375,0.6542,Negative,0.5356,Other,Mildly Negative
+2026-08-04 09:00:28,"Worst update ever, the servers keep crashing every five minutes",worst update ever servers keep crashing every five minutes,-1.0,1.0,Negative,1.0,Other,Strongly Negative
+2026-08-04 09:00:35,"Just got my order early, amazing service as always! Thank you Amazon",got order early amazing service always thank amazon,0.35,0.6,Positive,0.44,Amazon,Mildly Positive
+2026-08-04 09:00:42,"Package arrived today, it is a medium sized box with the item inside",package arrived today medium sized box item inside,0.0,0.0,Neutral,0.0,Other,Neutral
+2026-08-04 09:00:49,"Google Pixel camera is honestly incredible, best phone camera I have used",google pixel camera honestly incredible best phone camera used,0.95,0.6,Positive,1.0,Google,Strongly Positive
+2026-08-04 09:00:56,"Windows update broke my laptop again, so frustrated right now",windows update broke laptop frustrated right,-0.2071,0.3679,Negative,0.2623,Microsoft,Mildly Negative
+2026-08-04 09:01:03,"Installed the new Office update, seems fine so far",installed new office update seems fine far,0.2177,0.6515,Positive,0.3154,Microsoft,Mildly Positive
+2026-08-04 09:01:10,"Tesla autopilot saved me today, absolutely love this car",tesla autopilot saved today absolutely love car,0.5,0.6,Positive,0.59,Tesla,Strongly Positive
+2026-08-04 09:01:17,"Tesla service center took 3 weeks to fix a simple issue, unacceptable",tesla service center took weeks fix simple issue unacceptable,-0.05,0.2286,Negative,0.0843,Tesla,Mildly Negative
+2026-08-04 09:01:24,"New season of my favorite show just dropped on Netflix, so excited!",new season favorite show dropped netflix excited,0.3371,0.7348,Positive,0.4473,Netflix,Mildly Positive
+2026-08-04 09:01:31,"Netflix keeps cancelling good shows, so disappointed with their decisions",netflix keeps cancelling good shows disappointed decisions,-0.025,0.675,Neutral,0.1263,Netflix,Mildly Negative
+2026-08-04 09:01:38,Spotify wrapped is coming up soon I think,spotify wrapped coming soon think,0.0,0.0,Neutral,0.0,Spotify,Neutral
+2026-08-04 09:01:45,"Spotify's new playlist recommendations are spot on, love the algorithm",spotifys new playlist recommendations spot love algorithm,0.3182,0.5273,Positive,0.3973,Spotify,Mildly Positive
+2026-08-04 09:01:52,"Facebook ads are so annoying now, every third post is an ad",facebook ads annoying every third post ad,-0.4,0.45,Negative,0.4675,Facebook,Mildly Negative
+2026-08-04 09:01:59,"Logged into Facebook after a long time, a lot has changed",logged facebook long time lot changed,-0.05,0.4,Negative,0.11,Facebook,Mildly Negative
+2026-08-04 09:02:06,"PS5 exclusive games are absolutely stunning, best graphics I have seen",ps5 exclusive games absolutely stunning best graphics seen,0.75,0.65,Positive,0.8475,PlayStation,Strongly Positive
+2026-08-04 09:02:13,"PSN servers down again, cannot play online with friends, so annoying",psn servers play online friends annoying,-0.8,0.9,Negative,0.935,PlayStation,Strongly Negative
+2026-08-04 09:02:20,Xbox Game Pass is honestly the best value in gaming right now,xbox game pass honestly best value gaming right,0.2952,0.4119,Positive,0.357,Xbox,Mildly Positive
+2026-08-04 09:02:27,Xbox controller battery lasts about 20 hours for me,xbox controller battery lasts 20 hours,0.0,0.0,Neutral,0.0,Xbox,Neutral
+2026-08-04 09:02:34,"New iPhone camera is a huge upgrade, photos look incredible",new iphone camera huge upgrade photos look incredible,0.4788,0.7515,Positive,0.5915,Apple,Mildly Positive
+2026-08-04 09:02:41,iPhone battery life has gotten so much worse after the update,iphone battery life gotten much worse update,-0.4,0.6,Negative,0.49,Apple,Mildly Negative
+2026-08-04 09:02:48,"Verizon customer service put me on hold for over an hour, ridiculous",verizon customer service put hold hour ridiculous,-0.3333,1.0,Negative,0.4833,Verizon,Mildly Negative
+2026-08-04 09:02:55,Amazon delivery was three days late and the box was damaged,amazon delivery three days late box damaged,-0.3,0.6,Negative,0.39,Amazon,Mildly Negative
+2026-08-04 09:03:02,Using Google Maps to find a new restaurant nearby,using google maps find new restaurant nearby,0.1364,0.4545,Positive,0.2046,Google,Mildly Positive
+2026-08-04 09:03:09,"New CallOfDuty map design is fantastic, really well balanced",new callofduty map design fantastic really well balanced,0.2455,0.5182,Positive,0.3232,Call of Duty,Mildly Positive
+2026-08-04 09:03:16,Saw a new Tesla model on the road today,saw new tesla model road today,0.1364,0.4545,Positive,0.2046,Tesla,Mildly Positive
+2026-08-04 09:03:23,"Binge watched the entire series in one weekend, absolutely hooked",binge watched entire series one weekend absolutely hooked,0.1,0.7625,Positive,0.2144,Other,Mildly Positive
