@@ -519,13 +519,13 @@ DIAGRAM_LAYOUT  = json.dumps({
 def main():
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
 
-    print("⚙  Building data model schema …")
+    print("Building data model schema ...")
     data_model = build_data_model()
 
-    print("⚙  Building report layout (4 pages) …")
+    print("Building report layout (4 pages) ...")
     layout = build_layout()
 
-    print(f"⚙  Writing {OUT_PATH} …")
+    print(f"Writing {OUT_PATH} ...")
     with zipfile.ZipFile(OUT_PATH, "w", zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("[Content_Types].xml", CONTENT_TYPES)
         zf.writestr("Version",             "2.0")
@@ -536,7 +536,7 @@ def main():
         zf.writestr("Report/Layout",       layout)
 
     size_kb = os.path.getsize(OUT_PATH) // 1024
-    print(f"\n✅  Done! SentimentDashboard.pbit ({size_kb} KB)")
+    print(f"\nDone! SentimentDashboard.pbit ({size_kb} KB)")
     print(f"   Path: {OUT_PATH}")
     print("\n   Next: Double-click SentimentDashboard.pbit to open in Power BI Desktop.")
     print("         All 4 pages, 13 measures, and all visuals are pre-built.")
