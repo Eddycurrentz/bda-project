@@ -1,0 +1,24 @@
+# Real-Time Social Media Sentiment Analysis - Python Dependencies
+# Tested on Python 3.14, Windows 11, JDK 17
+
+# Big Data / Streaming
+pyspark==3.5.1
+# NOTE: the original "kafka-python" package (2.0.2) fails to import on
+# Python 3.12+ / 3.13+ / 3.14 due to a vendored-six loading bug.
+# kafka-python-ng is a drop-in, actively maintained fork that fixes this
+# and exposes the exact same `import kafka` API used in producer.py.
+kafka-python-ng==2.2.3
+
+# NLP
+nltk==3.9.1
+textblob==0.18.0.post0
+
+# Data handling
+pandas==2.2.3
+numpy==1.26.4
+
+# Visualization
+matplotlib==3.9.2
+
+# Utilities
+python-dateutil==2.9.0.post0
