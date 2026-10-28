@@ -207,3 +207,29 @@ Replace these with your own captures when running the project end-to-end.
 ## 9. Author
 
 Big Data Analytics Project — B.Tech Artificial Intelligence & Data Science
+
+## 10. SentinelPulse local web dashboard
+
+The repository also includes a local, Power BI-style dashboard for exploring
+the CSV output in a browser. It reads the latest available Spark part-file,
+then `output/sentiment_results_enriched.csv`, then the consolidated results
+file. If those are unavailable, it starts from `data/sample_tweets.csv`.
+
+Start it from this directory:
+
+```powershell
+python -m pip install -r requirements-web.txt
+python -m uvicorn webapp:app --host 127.0.0.1 --port 8000
+```
+
+Open <http://127.0.0.1:8000>. The dashboard includes sentiment KPIs, a
+time-series chart, sentiment share, brand polarity, searchable tweet feed,
+alert acknowledgement, a local CSV replay control, demo anomaly injection,
+and filtered CSV export. The browser can be used while the existing Kafka and
+Spark pipeline runs; refresh reads the most recently written CSV part-file.
+
+The web dashboard is a local demo layer over this project's CSV pipeline. Its
+replay and injected anomalies are in-memory demonstrations. It does not add
+production user accounts, RBAC, PostgreSQL/Redis persistence, email/webhook
+delivery, or a Kafka control plane. Run only on the local machine; the launch
+command binds to loopback (`127.0.0.1`).
