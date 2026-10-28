@@ -21,7 +21,7 @@ REFRESH_COOKIE = "sp_refresh"
 CSRF_COOKIE = "sp_csrf"
 ACCESS_TTL = 15 * 60
 PASSWORDS = PasswordHasher(time_cost=3, memory_cost=65536, parallelism=2)
-JWT_SECRET = os.getenv("SENTINEL_JWT_SECRET", "local-development-secret-change-this-32bytes")
+JWT_SECRET = os.getenv("SENTINEL_JWT_SECRET") or secrets.token_urlsafe(48)
 
 
 def hash_password(password: str) -> str:

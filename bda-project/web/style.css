@@ -1475,3 +1475,4 @@ body { background: var(--bg); }
 .dark .auth-card h2 { color: #f3eff9; }
 .record-count { color: #5e3cbc; font-weight: 700; }
 .dark .record-count { color: #c2adff; }
+.chart-empty[hidden] { display: none; }

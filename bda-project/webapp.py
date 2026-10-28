@@ -26,12 +26,23 @@ from anomaly import score_windows
 @asynccontextmanager
 async def lifespan(_app):
     if os.getenv("SENTINEL_ENV", "development").lower() == "production":
-        if len(os.getenv("SENTINEL_JWT_SECRET", "")) < 32:
+        jwt_secret = os.getenv("SENTINEL_JWT_SECRET", "")
+        if len(jwt_secret) < 32 or "CHANGE_ME" in jwt_secret:
             raise RuntimeError("Set SENTINEL_JWT_SECRET to at least 32 characters in production")
         if os.getenv("SENTINEL_COOKIE_SECURE", "false").lower() != "true":
             raise RuntimeError("Set SENTINEL_COOKIE_SECURE=true behind HTTPS in production")
-        if not os.getenv("SENTINEL_DEMO_PASSWORD") or "CHANGE_ME" in os.getenv("SENTINEL_DEMO_PASSWORD", ""):
-            raise RuntimeError("Set a strong SENTINEL_DEMO_PASSWORD before production startup")
+        database_url = os.getenv("DATABASE_URL", "")
+        if not database_url.startswith(("postgres://", "postgresql://", "postgresql+psycopg://")):
+            raise RuntimeError("Set DATABASE_URL to a persistent PostgreSQL database in production")
+        public_url = os.getenv("PUBLIC_BASE_URL", "").lower()
+        if not public_url.startswith("https://") or "example.com" in public_url or "localhost" in public_url:
+            raise RuntimeError("Set PUBLIC_BASE_URL to the hosted HTTPS URL in production")
+        admin_password = os.getenv("SENTINEL_DEMO_PASSWORD", "")
+        if "CHANGE_ME" in admin_password or not auth_service.password_is_valid(admin_password):
+            raise RuntimeError("Set a unique 12+ character SENTINEL_DEMO_PASSWORD in production")
+        admin_email = os.getenv("SENTINEL_DEMO_EMAIL", "").strip().lower()
+        if not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", admin_email) or admin_email.endswith(".local"):
+            raise RuntimeError("Set SENTINEL_DEMO_EMAIL for the initial administrator in production")
     security_store.init_db()
     email = os.getenv("SENTINEL_DEMO_EMAIL", "admin@sentinelpulse.local").lower()
     if not security_store.get_user_by_email(email):
@@ -464,6 +475,16 @@ def password_reset_complete(payload: ResetComplete):
 @app.get("/api/profile")
 def profile(user: dict[str, Any] = Depends(require_user)):
     return _public(user)
+
+
+@app.get("/api/config")
+def public_config():
+    demo_enabled = os.getenv("SENTINEL_ENV", "development").lower() in {"development", "local", "test"}
+    return {
+        "demo_login_enabled": demo_enabled,
+        "demo_email": os.getenv("SENTINEL_DEMO_EMAIL", "admin@sentinelpulse.local") if demo_enabled else None,
+        "demo_password": os.getenv("SENTINEL_DEMO_PASSWORD", "SentinelDemo!2026") if demo_enabled else None,
+    }
 
 
 @app.put("/api/profile")

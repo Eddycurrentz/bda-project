@@ -1,9 +1,9 @@
-﻿function showAuth(message='') {
+function showAuth(message='') {
   $('#auth-screen').hidden=false;
   $('#auth-message').textContent=message;
 }
 
-let liveSocket=null;
+let liveSocket=null, demoCredentials=null;
 function connectLive(){
   if(!currentUser)return;
   const scheme=location.protocol==='https:'?'wss:':'ws:';
@@ -31,6 +31,12 @@ async function bootstrapAuth() {
   try {
     const csrf=await fetch('/auth/csrf',{credentials:'same-origin'});
     csrfToken=(await csrf.json()).csrf_token;
+    const configResponse=await fetch('/api/config',{credentials:'same-origin'});
+    const config=await configResponse.json();
+    demoCredentials=config.demo_login_enabled?config:null;
+    $('#auth-demo').hidden=!demoCredentials;
+    if(demoCredentials){$('#demo-email').textContent=demoCredentials.demo_email;$('#demo-password').textContent=`Local demo password: ${demoCredentials.demo_password}`}
+    else {$('#login-form').elements.email.value='';$('#login-form').elements.password.value=''}
     if(resetToken){$('#auth-title').textContent='Reset your password';$('#auth-copy')?.classList.add('hidden');$('#login-form').elements.email.closest('label').hidden=true;$('#forgot-password').hidden=true;$('#auth-demo').hidden=true;$('.auth-register').hidden=true;$('#login-form').elements.password.value='';$('#login-form').elements.password.placeholder='New password (12+ characters)';showAuth('Choose a new password for your account.');return}
     const response=await fetch('/auth/me',{credentials:'same-origin'});
     if(response.ok) enterWorkspace((await response.json()).user);
@@ -41,8 +47,9 @@ async function bootstrapAuth() {
 let registration=false;
 let resetToken=new URLSearchParams(location.search).get('reset');
 $('#fill-demo').onclick=()=>{
-  $('#login-form').elements.email.value='admin@sentinelpulse.local';
-  $('#login-form').elements.password.value='SentinelDemo!2026';
+  if(!demoCredentials)return;
+  $('#login-form').elements.email.value=demoCredentials.demo_email;
+  $('#login-form').elements.password.value=demoCredentials.demo_password;
 };
 $('#register-toggle').onclick=()=>{
   registration=!registration;
@@ -51,7 +58,7 @@ $('#register-toggle').onclick=()=>{
   if(registration&&!label){label=document.createElement('label');label.id='auth-form-name';label.append('Your name');const input=document.createElement('input');input.name='name';input.required=true;input.minLength=2;input.maxLength=80;label.append(input);$('#login-form').prepend(label)}
   if(!registration)label?.remove();
   $('#auth-form-name input')?.toggleAttribute('required',registration);
-  $('#auth-demo').hidden=registration;
+  $('#auth-demo').hidden=registration||!demoCredentials;
   $('#register-toggle').textContent=registration?'Back to sign in':'Create an account';
   $('#login-form').elements.password.minLength=registration?12:1;
   $('#login-form').elements.password.value='';
@@ -65,7 +72,7 @@ $('#login-form').onsubmit=async event=>{
   $('#auth-message').textContent='';
   try {
     const response=await api(resetToken?'/auth/password-reset/complete':registration?'/auth/register':'/auth/login',{method:'POST',body:JSON.stringify(resetToken?{token:resetToken,new_password:data.password}:data)});
-    if(resetToken){resetToken=null;history.replaceState(null,'',location.pathname);$('#auth-title').textContent='Password reset';$('#auth-message').textContent='Password reset. Sign in with your new password.';$('#login-form').elements.password.value='';$('#login-form').elements.email.closest('label').hidden=false;$('#forgot-password').hidden=false;$('#auth-demo').hidden=false;$('.auth-register').hidden=false;$('#login-form').elements.password.placeholder='';return}
+    if(resetToken){resetToken=null;history.replaceState(null,'',location.pathname);$('#auth-title').textContent='Password reset';$('#auth-message').textContent='Password reset. Sign in with your new password.';$('#login-form').elements.password.value='';$('#login-form').elements.email.closest('label').hidden=false;$('#forgot-password').hidden=false;$('#auth-demo').hidden=!demoCredentials;$('.auth-register').hidden=false;$('#login-form').elements.password.placeholder='';return}
     csrfToken=response.csrf_token;enterWorkspace(response.user);toast(registration?'Account created':'Signed in successfully');
   } catch(error) { if(error.message.includes('authenticator code'))$('#totp-label').hidden=false;$('#auth-message').textContent=error.message; }
 };
@@ -91,7 +98,7 @@ renderPage=async function(page){
     $('#settings-theme').onclick=()=>document.body.classList.toggle('dark');$('#settings-shortcuts').onclick=()=>toast('Shortcut: press / to focus search');$('#settings-inject')?.addEventListener('click',inject);return;
   }
   if(page==='reports'){
-    $('#view-generic').innerHTML=`<article class="panel"><h2>Sentiment report</h2><p class="subtitle">Download a filtered snapshot for Power BI, Excel, or sharing.</p><div class="generic-actions" style="margin-top:16px"><button class="primary" id="report-csv">â†§ &nbsp; Export CSV</button><button id="report-pdf">â–¤ &nbsp; Export PDF</button></div></article><article class="panel"><h2>Current scope</h2><p class="subtitle">Available dataset Â· ${esc(state.brand==='all'?'all brands':state.brand)} Â· ${state.search?`Search: â€œ${esc(state.search)}â€`:'all matching tweets'}</p></article>`;
+    $('#view-generic').innerHTML=`<article class="panel"><h2>Sentiment report</h2><p class="subtitle">Download a filtered snapshot for Power BI, Excel, or sharing.</p><div class="generic-actions" style="margin-top:16px"><button class="primary" id="report-csv">↧ &nbsp; Export CSV</button><button id="report-pdf">▤ &nbsp; Export PDF</button></div></article><article class="panel"><h2>Current scope</h2><p class="subtitle">Available dataset · ${esc(state.brand==='all'?'all brands':state.brand)} · ${state.search?`Search: “${esc(state.search)}”`:'all matching tweets'}</p></article>`;
     $('#report-csv').onclick=()=>download('csv');$('#report-pdf').onclick=()=>download('pdf');return;
   }
   return renderPageBeforeReports(page);
@@ -104,7 +111,7 @@ renderPage=async function(page){
   const el=$('#view-generic');
   const result=await api('/api/tweets?'+query({limit:20,page:state.page,sentiment:explorerSentiment}));
   const items=[...result.items].sort((a,b)=>{const av=a[explorerSort],bv=b[explorerSort];const cmp=typeof av==='number'?av-bv:String(av??'').localeCompare(String(bv??''));return explorerDesc?-cmp:cmp});
-  el.innerHTML=`<article class="panel"><div class="table-tools"><div><h2>Conversation explorer</h2><p class="subtitle">${fmt(result.total)} matching mentions · ${fmt(result.available_total)} total records available</p></div><select id="sentiment-filter" class="role-select"><option value="all">All sentiment</option><option ${explorerSentiment==='Positive'?'selected':''}>Positive</option><option ${explorerSentiment==='Negative'?'selected':''}>Negative</option><option ${explorerSentiment==='Neutral'?'selected':''}>Neutral</option></select></div><table class="data-table"><thead><tr><th data-sort="tweet">TWEET â†•</th><th data-sort="brand">BRAND â†•</th><th data-sort="sentiment">SENTIMENT â†•</th><th data-sort="polarity">POLARITY â†•</th><th data-sort="timestamp">TIME â†•</th></tr></thead><tbody>${items.map(r=>`<tr><td>${esc(r.tweet)}</td><td>${esc(r.brand)}</td><td><span class="sentiment-chip ${esc(r.sentiment)}">${esc(r.sentiment)}</span></td><td>${Number(r.polarity).toFixed(2)}</td><td>${esc(r.timestamp)}</td></tr>`).join('')||'<tr><td colspan="5" class="empty-state">No mentions match these filters.</td></tr>'}</tbody></table><div class="table-pagination"><span>Page ${result.page} of ${result.pages}</span><div><button id="page-prev" ${result.page<=1?'disabled':''}>â† Previous</button><button id="page-next" ${result.page>=result.pages?'disabled':''}>Next â†’</button></div></div></article>`;
+  el.innerHTML=`<article class="panel"><div class="table-tools"><div><h2>Conversation explorer</h2><p class="subtitle">${fmt(result.total)} matching mentions · ${fmt(result.available_total)} total records available</p></div><select id="sentiment-filter" class="role-select"><option value="all">All sentiment</option><option ${explorerSentiment==='Positive'?'selected':''}>Positive</option><option ${explorerSentiment==='Negative'?'selected':''}>Negative</option><option ${explorerSentiment==='Neutral'?'selected':''}>Neutral</option></select></div><table class="data-table"><thead><tr><th data-sort="tweet">TWEET ↕</th><th data-sort="brand">BRAND ↕</th><th data-sort="sentiment">SENTIMENT ↕</th><th data-sort="polarity">POLARITY ↕</th><th data-sort="timestamp">TIME ↕</th></tr></thead><tbody>${items.map(r=>`<tr><td>${esc(r.tweet)}</td><td>${esc(r.brand)}</td><td><span class="sentiment-chip ${esc(r.sentiment)}">${esc(r.sentiment)}</span></td><td>${Number(r.polarity).toFixed(2)}</td><td>${esc(r.timestamp)}</td></tr>`).join('')||'<tr><td colspan="5" class="empty-state">No mentions match these filters.</td></tr>'}</tbody></table><div class="table-pagination"><span>Page ${result.page} of ${result.pages}</span><div><button id="page-prev" ${result.page<=1?'disabled':''}>← Previous</button><button id="page-next" ${result.page>=result.pages?'disabled':''}>Next →</button></div></div></article>`;
   $('#sentiment-filter').onchange=e=>{explorerSentiment=e.target.value;state.page=1;renderPage('explorer')};$$('[data-sort]',el).forEach(th=>th.onclick=()=>{if(explorerSort===th.dataset.sort)explorerDesc=!explorerDesc;else{explorerSort=th.dataset.sort;explorerDesc=false}renderPage('explorer')});$('#page-prev').onclick=()=>{state.page=Math.max(1,state.page-1);renderPage('explorer')};$('#page-next').onclick=()=>{state.page=Math.min(result.pages,state.page+1);renderPage('explorer')};
 };
 
@@ -114,4 +121,4 @@ $('#brand-filter').onchange=e=>{state.brand=e.target.value;state.page=1;load();i
 bootstrapAuth();
 setInterval(()=>{if(currentUser&&!state.paused)load()},8000);
 $('#export-btn').onclick=()=>download('csv');
-$('#date-range').onclick=event=>{const options=['all','30','7','90'],labels={all:'All available',30:'Last 30 days',7:'Last 7 days',90:'Last 90 days'};state.days=options[(options.indexOf(state.days)+1)%options.length];event.currentTarget.innerHTML=`â–¦ &nbsp; ${labels[state.days]} <span class="down">âŒ„</span>`;load()};
+$('#date-range').onclick=event=>{const options=['all','30','7','90'],labels={all:'All available',30:'Last 30 days',7:'Last 7 days',90:'Last 90 days'};state.days=options[(options.indexOf(state.days)+1)%options.length];event.currentTarget.innerHTML=`▦ &nbsp; ${labels[state.days]} <span class="down">⌄</span>`;load()};

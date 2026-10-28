@@ -48,7 +48,10 @@ class _PgConnection:
     def __init__(self):
         global _pg_engine
         url = os.environ["DATABASE_URL"]
-        url = url.replace("postgresql://", "postgresql+psycopg://", 1) if url.startswith("postgresql://") else url
+        if url.startswith("postgres://"):
+            url = "postgresql+psycopg://" + url[len("postgres://"):]
+        elif url.startswith("postgresql://"):
+            url = "postgresql+psycopg://" + url[len("postgresql://"):]
         if _pg_engine is None:
             _pg_engine = create_engine(url, pool_pre_ping=True, pool_size=5, max_overflow=2)
         self.connection = _pg_engine.connect()

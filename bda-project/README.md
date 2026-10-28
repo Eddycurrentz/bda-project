@@ -23,12 +23,7 @@ python -m venv ..\venv
 ..\venv\Scripts\python.exe -m uvicorn webapp:app --host 127.0.0.1 --port 8000
 ```
 
-Open <http://127.0.0.1:8000>. On first local start, the demo admin is created automatically:
-
-- Email: `admin@sentinelpulse.local`
-- Password: `SentinelDemo!2026`
-
-Change this password in Settings before using real data. Local state is stored in `sentinelpulse.db` and is ignored by Git. To reset the demo database, stop the server and remove that file.
+Open <http://127.0.0.1:8000>. In local development, the sign-in page displays a demo login button. Local state is stored in `output/sentinelpulse.sqlite3` and is ignored by Git. To reset the demo database, stop the server and remove that file.
 
 The app loads the newest Spark part-file when available, then consolidated output CSVs, and finally the bundled 100-row `data/sample_tweets.csv` demo fixture. The dashboard
 shows the matching count and the full number of loaded records separately. Without Kafka/Spark running, the UI is still usable with the sample dataset. The dashboard's replay and injected anomaly controls are for demonstration.
@@ -52,6 +47,10 @@ For an existing local Kafka/Spark installation, start the consumer with `python 
 All settings are environment variables; `.env.example` documents the supported names. Key values include `DATABASE_URL`, `REDIS_URL`, `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC`, `SPARK_MASTER`, `SENTINEL_JWT_SECRET`, and `SENTINEL_COOKIE_SECURE`. SQLite and in-memory rate limiting are the local defaults. For password reset email, configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`, and `PUBLIC_BASE_URL`; without SMTP the API returns a generic response but cannot deliver reset links.
 
 For production, use HTTPS, a strong secret, secure cookies, a non-demo admin password, managed secrets, backups, and a real SMTP service. Set `SENTINEL_ENV=production`; startup will reject missing production secrets. The Compose stack is intended for local demos and is not a hardened public deployment. No public website has been deployed from this workspace; the link above is local to the machine running the server.
+
+## Push and host
+
+The repository is prepared for a Docker-based host. Follow [DEPLOYMENT.md](DEPLOYMENT.md) to connect the GitHub repository to a host, provision PostgreSQL, and set the required production environment variables. The hosted container listens on the platform-provided `PORT`, reports health at `/ready`, uses HTTPS-only cookies, and hides all local demo-login credentials. Never upload `.env` files or downloaded Kaggle data. Push to the `main` branch to run the included GitHub Actions workflow.
 
 ## Development and verification
 

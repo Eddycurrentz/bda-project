@@ -1,11 +1,15 @@
 .git
-.env
+.env*
 .venv
 venv
 __pycache__
 .pytest-tmp
+.pytest_cache
 *.pyc
+*.sqlite3
 logs
+data/twitter_training.csv
+data/twitter_validation.csv
 output/checkpoints
 output/sentiment_stream
 output/visualizations

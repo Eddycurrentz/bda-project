@@ -15,6 +15,13 @@ output/checkpoints/
 output/sentinelpulse.sqlite3
 .pytest-tmp/
 .env
+.env.*
+!.env.example
+
+# Downloaded source datasets and generated stream output
+data/twitter_training.csv
+data/twitter_validation.csv
+output/sentiment_stream/part-*.csv
 
 # OS
 .DS_Store
