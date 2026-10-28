@@ -8,7 +8,7 @@ results on a live Power BI dashboard.
 
 ## Web dashboard
 
-The SentinelPulse browser dashboard and FastAPI service live in [`bda-project/`](bda-project/README.md). To deploy it on Vercel, import this repository and set **Root Directory** to `bda-project`; configure the production environment variables and persistent PostgreSQL described in [`bda-project/DEPLOYMENT.md`](bda-project/DEPLOYMENT.md). The dashboard is responsive across desktop, tablet, and phone layouts. The Vercel deployment hosts the dashboard/API; run Kafka and Spark ingestion separately.
+The SentinelPulse browser dashboard and FastAPI service live in [`bda-project/`](bda-project/README.md). Import this repository on Vercel and keep the repository root as the **Root Directory**; the root `index.py` forwards requests to the dashboard. You can also set **Root Directory** to `bda-project` to use its direct FastAPI entrypoint. Configure production environment variables and persistent PostgreSQL as described in [`bda-project/DEPLOYMENT.md`](bda-project/DEPLOYMENT.md). The dashboard is responsive across desktop, tablet, and phone layouts. The Vercel deployment hosts the dashboard/API; run Kafka and Spark ingestion separately.
 
 ---
 
@@ -90,8 +90,8 @@ cd SocialMediaSentiment
 python -m venv venv
 venv\Scripts\activate
 
-# 2. Install dependencies
-pip install -r requirements.txt
+# 2. Install web dependencies, then the additional pipeline dependencies
+pip install -r requirements.txt -r requirements-pipeline.txt
 
 # 3. Download NLTK corpora (one-time)
 python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab'); nltk.download('stopwords')"

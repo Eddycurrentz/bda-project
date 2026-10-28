@@ -4,6 +4,7 @@ __pycache__/
 *.pyo
 venv/
 .venv/
+.vercel/
 
 # Local credentials, databases, and downloaded Kaggle source data
 .env

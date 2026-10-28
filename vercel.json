@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "index.py": {
+      "includeFiles": "{bda-project/*.py,bda-project/web/**,bda-project/data/sample_tweets.csv,bda-project/output/sentiment_results.csv,bda-project/output/sentiment_results_enriched.csv}"
+    }
+  }
+}
