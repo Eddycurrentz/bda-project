@@ -12,6 +12,9 @@ logs/
 # Spark checkpoints (regenerated at runtime)
 output/sentiment_stream/_checkpoint/
 output/checkpoints/
+output/sentinelpulse.sqlite3
+.pytest-tmp/
+.env
 
 # OS
 .DS_Store

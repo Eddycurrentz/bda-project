@@ -74,11 +74,14 @@ class TweetProducer:
         topic: str = KAFKA.topic_name,
         send_interval: float = KAFKA.send_interval_seconds,
         limit: Optional[int] = None,
+        repeat: bool = True,
     ) -> None:
         self.csv_path = csv_path
         self.topic = topic
         self.send_interval = send_interval
         self.limit = limit
+        self.repeat = repeat
+        self._metadata_by_text: dict[str, dict] = {}
         self.producer: Optional[KafkaProducer] = None
         self.bootstrap_servers = bootstrap_servers
         self.shutdown = GracefulShutdown()
@@ -142,33 +145,40 @@ class TweetProducer:
         logger.info("Loading dataset from %s", self.csv_path)
 
         try:
-            df = pd.read_csv(self.csv_path, header=None, encoding="utf-8", on_bad_lines="skip")
+            probe = pd.read_csv(self.csv_path, header=None, encoding="utf-8", on_bad_lines="skip")
         except UnicodeDecodeError:
-            df = pd.read_csv(self.csv_path, header=None, encoding="latin-1", on_bad_lines="skip")
-
-        # Case 1: raw Kaggle format with no header, 4 columns
-        if df.shape[1] >= 4 and df.iloc[0].astype(str).str.match(r"^\d+$").any() is False:
-            df.columns = list(DATASET.raw_columns) + [
-                f"extra_{i}" for i in range(df.shape[1] - len(DATASET.raw_columns))
-            ]
-            text_series = df[DATASET.text_column]
-        else:
-            # Case 2: has a header row; try to detect the text column
-            df = pd.read_csv(self.csv_path, encoding="utf-8", on_bad_lines="skip")
-            candidate_cols = [c for c in df.columns if c.lower() in ("tweet_text", "text", "tweet")]
+            probe = pd.read_csv(self.csv_path, header=None, encoding="latin-1", on_bad_lines="skip")
+        header_names = {str(v).strip().lower() for v in probe.iloc[0].tolist()} if not probe.empty else set()
+        has_header = bool(header_names & {"tweet_text", "text", "tweet", "brand", "entity", "username"})
+        if has_header:
+            try:
+                df = pd.read_csv(self.csv_path, encoding="utf-8", on_bad_lines="skip")
+            except UnicodeDecodeError:
+                df = pd.read_csv(self.csv_path, encoding="latin-1", on_bad_lines="skip")
+            candidate_cols = [c for c in df.columns if c.strip().lower() in ("tweet_text", "text", "tweet")]
             if not candidate_cols:
-                raise ValueError(
-                    f"Could not find a tweet-text column in {self.csv_path}. "
-                    f"Available columns: {list(df.columns)}"
-                )
+                raise ValueError(f"Could not find a tweet-text column in {self.csv_path}. Available columns: {list(df.columns)}")
             text_series = df[candidate_cols[0]]
+        else:
+            df = probe.copy()
+            columns = list(DATASET.raw_columns) + [f"extra_{i}" for i in range(max(0, df.shape[1]-len(DATASET.raw_columns)))]
+            df.columns = columns[:df.shape[1]]
+            if DATASET.text_column not in df.columns:
+                raise ValueError(f"Could not find tweet text in {self.csv_path}")
+            text_series = df[DATASET.text_column]
 
         if self.limit:
             text_series = text_series.head(self.limit)
 
-        for tweet_text in text_series.dropna():
+        brand_col = next((c for c in df.columns if c.lower() in ("brand", "entity")), None)
+        user_col = next((c for c in df.columns if c.lower() in ("username", "user", "handle")), None)
+        self._metadata_by_text = {}
+        for index, tweet_text in text_series.dropna().items():
             cleaned = str(tweet_text).strip()
             if cleaned:
+                source_row = df.loc[index]
+                self._metadata_by_text[cleaned] = {"brand": str(source_row[brand_col]).strip() if brand_col and pd.notna(source_row[brand_col]) else "Other",
+                    "username": str(source_row[user_col]).strip() if user_col and pd.notna(source_row[user_col]) else "community"}
                 yield cleaned
 
     # ----------------------------------------------------------------- #
@@ -180,6 +190,7 @@ class TweetProducer:
             "tweet_id": tweet_id,
             "tweet_text": tweet_text,
             "produced_at": datetime.now(timezone.utc).isoformat(),
+            **self._metadata_by_text.get(tweet_text, {"brand": "Other", "username": "community"}),
         }
 
     def send_message(self, message: dict) -> bool:
@@ -212,13 +223,19 @@ class TweetProducer:
         )
 
         try:
-            for tweet_id, tweet_text in enumerate(self.load_tweets(), start=1):
-                if self.shutdown.should_stop:
+            tweet_id = 0
+            while not self.shutdown.should_stop:
+                count = 0
+                for tweet_text in self.load_tweets():
+                    if self.shutdown.should_stop or (self.limit is not None and self._sent_count >= self.limit):
+                        break
+                    tweet_id += 1
+                    count += 1
+                    self.send_message(self.build_message(tweet_text, tweet_id))
+                    if not self.shutdown.should_stop:
+                        time.sleep(self.send_interval)
+                if not self.repeat or count == 0 or (self.limit is not None and self._sent_count >= self.limit):
                     break
-
-                message = self.build_message(tweet_text, tweet_id)
-                self.send_message(message)
-                time.sleep(self.send_interval)
 
         except FileNotFoundError as exc:
             logger.error(str(exc))
@@ -246,6 +263,7 @@ def parse_args() -> argparse.Namespace:
         default=DATASET.raw_csv_path,
         help="Path to the tweet CSV dataset.",
     )
+    parser.add_argument("--once", action="store_true", help="Replay the CSV only once, then exit.")
     parser.add_argument(
         "--rate",
         type=float,
@@ -274,6 +292,7 @@ def main() -> None:
         bootstrap_servers=args.bootstrap_servers,
         send_interval=args.rate,
         limit=args.limit,
+        repeat=not args.once,
     )
     producer.run()
 

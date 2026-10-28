@@ -27,6 +27,7 @@ from __future__ import annotations
 import logging
 import os
 import sys
+import json
 
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import col, current_timestamp, from_json, udf
@@ -38,7 +39,7 @@ from pyspark.sql.types import (
     StructType,
 )
 
-from config import KAFKA, LOGGING, OUTPUT, SPARK
+from config import CHECKPOINT_DIR, KAFKA, LOGGING, OUTPUT, SPARK
 from preprocess import clean_tweet
 from sentiment import analyze_text
 
@@ -73,6 +74,8 @@ TWEET_SCHEMA = StructType(
         StructField("tweet_id", IntegerType(), True),
         StructField("tweet_text", StringType(), True),
         StructField("produced_at", StringType(), True),
+        StructField("brand", StringType(), True),
+        StructField("username", StringType(), True),
     ]
 )
 
@@ -93,6 +96,7 @@ def build_spark_session() -> SparkSession:
         SparkSession.builder.appName(SPARK.app_name)
         .master(SPARK.master)
         .config("spark.sql.shuffle.partitions", SPARK.shuffle_partitions)
+        .config("spark.driver.memory", os.getenv("SPARK_DRIVER_MEMORY", "1g"))
         .config("spark.jars.packages", SPARK.kafka_package)
         .config("spark.sql.streaming.schemaInference", "true")
         .getOrCreate()
@@ -127,6 +131,8 @@ def parse_json_payload(raw_df: DataFrame) -> DataFrame:
             col("data.tweet_id").alias("tweet_id"),
             col("data.tweet_text").alias("tweet"),
             col("data.produced_at").alias("produced_at"),
+            col("data.brand").alias("brand"),
+            col("data.username").alias("username"),
             col("kafka_timestamp"),
         )
         .filter(col("tweet").isNotNull())
@@ -144,6 +150,8 @@ def apply_cleaning_and_sentiment(parsed_df: DataFrame) -> DataFrame:
     result_df = with_sentiment.select(
         current_timestamp().alias("timestamp"),
         col("tweet"),
+        col("brand"),
+        col("username"),
         col("clean_tweet"),
         col("sentiment_struct.polarity").alias("polarity"),
         col("sentiment_struct.subjectivity").alias("subjectivity"),
@@ -151,6 +159,24 @@ def apply_cleaning_and_sentiment(parsed_df: DataFrame) -> DataFrame:
         col("sentiment_struct.confidence").alias("confidence"),
     )
     return result_df
+
+
+def persist_batch(batch_df: DataFrame, batch_id: int) -> None:
+    """Persist each micro-batch to the history DB and publish a bounded live batch."""
+    if not os.getenv("DATABASE_URL") and not os.getenv("REDIS_URL"):
+        return
+    rows = [row.asDict(recursive=True) for row in batch_df.collect()]
+    if not rows:
+        return
+    if os.getenv("DATABASE_URL"):
+        import security_store
+        security_store.init_db()
+        security_store.save_tweets(rows)
+    redis_url = os.getenv("REDIS_URL")
+    if redis_url:
+        import redis
+        client = redis.Redis.from_url(redis_url, socket_timeout=2)
+        client.publish("sentinelpulse:live", json.dumps({"batch_id": batch_id, "tweets": rows}, ensure_ascii=False))
 
 
 def write_to_csv(result_df: DataFrame):
@@ -185,6 +211,16 @@ def write_to_console(result_df: DataFrame):
     )
 
 
+def write_to_history(result_df: DataFrame):
+    if not os.getenv("DATABASE_URL") and not os.getenv("REDIS_URL"):
+        return None
+    return (result_df.writeStream.foreachBatch(persist_batch)
+        .outputMode("append")
+        .option("checkpointLocation", str(CHECKPOINT_DIR / "history"))
+        .trigger(processingTime=SPARK.trigger_processing_time)
+        .start())
+
+
 def main() -> None:
     spark = build_spark_session()
 
@@ -195,10 +231,13 @@ def main() -> None:
 
         csv_query = write_to_csv(result_df)
         console_query = write_to_console(result_df)
+        history_query = write_to_history(result_df)
 
         logger.info("Spark Structured Streaming job is running. Press Ctrl+C to stop.")
         csv_query.awaitTermination()
         console_query.awaitTermination()
+        if history_query:
+            history_query.awaitTermination()
 
     except KeyboardInterrupt:
         logger.warning("Interrupted by user. Stopping streaming queries...")

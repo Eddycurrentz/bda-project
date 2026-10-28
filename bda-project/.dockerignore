@@ -1,0 +1,14 @@
+.git
+.env
+.venv
+venv
+__pycache__
+.pytest-tmp
+*.pyc
+logs
+output/checkpoints
+output/sentiment_stream
+output/visualizations
+report
+presentation
+screenshots

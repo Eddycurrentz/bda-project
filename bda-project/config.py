@@ -37,8 +37,8 @@ for _directory in (DATA_DIR, OUTPUT_DIR, LOG_DIR, CHECKPOINT_DIR):
 class KafkaConfig:
     """Kafka broker and topic configuration (KRaft mode, no ZooKeeper)."""
 
-    bootstrap_servers: str = "localhost:9092"
-    topic_name: str = "twitter-stream"
+    bootstrap_servers: str = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
+    topic_name: str = os.getenv("KAFKA_TOPIC", "twitter-stream")
     client_id: str = "sentiment-producer"
     group_id: str = "sentiment-consumer-group"
 
@@ -46,10 +46,10 @@ class KafkaConfig:
     producer_acks: str = "all"
     producer_retries: int = 5
     linger_ms: int = 10
-    send_interval_seconds: float = 1.0  # one tweet per second
+    send_interval_seconds: float = float(os.getenv("PRODUCER_INTERVAL_SECONDS", "1.0"))
 
     # Consumer / Spark readStream starting offset
-    starting_offsets: str = "latest"
+    starting_offsets: str = os.getenv("KAFKA_STARTING_OFFSETS", "latest")
 
 
 @dataclass(frozen=True)
@@ -57,7 +57,7 @@ class SparkConfig:
     """Apache Spark / Spark Structured Streaming configuration."""
 
     app_name: str = "RealTimeSocialMediaSentimentAnalysis"
-    master: str = "local[*]"
+    master: str = os.getenv("SPARK_MASTER", "local[*]")
     shuffle_partitions: str = "4"
     max_offsets_per_trigger: str = "200"
     trigger_processing_time: str = "5 seconds"
@@ -89,6 +89,8 @@ class OutputConfig:
     output_columns: tuple = (
         "timestamp",
         "tweet",
+        "brand",
+        "username",
         "clean_tweet",
         "polarity",
         "subjectivity",
