@@ -6,6 +6,10 @@ A Big Data Analytics project (B.Tech AI & Data Science) that streams tweets in
 real time, cleans and analyzes their sentiment with NLP, and visualizes the
 results on a live Power BI dashboard.
 
+## Web dashboard
+
+The SentinelPulse browser dashboard and FastAPI service live in [`bda-project/`](bda-project/README.md). To deploy it on Vercel, import this repository and set **Root Directory** to `bda-project`; configure the production environment variables and persistent PostgreSQL described in [`bda-project/DEPLOYMENT.md`](bda-project/DEPLOYMENT.md). The dashboard is responsive across desktop, tablet, and phone layouts. The Vercel deployment hosts the dashboard/API; run Kafka and Spark ingestion separately.
+
 ---
 
 ## 1. Architecture

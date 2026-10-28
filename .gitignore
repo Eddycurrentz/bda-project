@@ -5,6 +5,15 @@ __pycache__/
 venv/
 .venv/
 
+# Local credentials, databases, and downloaded Kaggle source data
+.env
+.env.*
+!.env.example
+*.sqlite3
+*.db
+data/twitter_training.csv
+data/twitter_validation.csv
+
 # Logs
 logs/
 *.log
@@ -12,6 +21,7 @@ logs/
 # Spark checkpoints (regenerated at runtime)
 output/sentiment_stream/_checkpoint/
 output/checkpoints/
+output/sentiment_stream/part-*.csv
 
 # OS
 .DS_Store
