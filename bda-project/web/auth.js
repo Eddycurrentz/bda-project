@@ -29,8 +29,7 @@ function enterWorkspace(user) {
 
 async function bootstrapAuth() {
   try {
-    const csrf=await fetch('/auth/csrf',{credentials:'same-origin'});
-    csrfToken=(await csrf.json()).csrf_token;
+    await ensureCsrfToken();
     const configResponse=await fetch('/api/config',{credentials:'same-origin'});
     const config=await configResponse.json();
     demoCredentials=config.demo_login_enabled?config:null;

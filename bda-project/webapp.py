@@ -298,6 +298,7 @@ async def security_middleware(request: Request, call_next):
 def csrf_token(response: Response):
     csrf = secrets.token_urlsafe(24)
     secure = os.getenv("SENTINEL_COOKIE_SECURE", "false").lower() == "true"
+    response.headers["Cache-Control"] = "no-store, private"
     response.set_cookie(auth_service.CSRF_COOKIE, csrf, max_age=14*86400, httponly=False,
                         secure=secure, samesite="strict", path="/")
     return {"csrf_token": csrf}

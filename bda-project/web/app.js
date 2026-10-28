@@ -4,12 +4,45 @@ const state = { brand:'all', search:'', days:'all', series:'all', paused:false, 
 let csrfToken='', currentUser=null, registerMode=false;
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = n => new Intl.NumberFormat('en-US').format(n || 0);
-async function api(url, options={}, canRefresh=true) { const method=(options.method||'GET').toUpperCase(), headers=new Headers(options.headers||{}); if(!['GET','HEAD','OPTIONS'].includes(method)){headers.set('X-CSRF-Token',csrfToken);if(options.body)headers.set('Content-Type','application/json')}const res=await fetch(url,{...options,headers,credentials:'same-origin'}); if(res.status===401&&canRefresh&&!url.startsWith('/auth/')){try{const rr=await fetch('/auth/refresh',{method:'POST',headers:{'X-CSRF-Token':csrfToken},credentials:'same-origin'});if(rr.ok){const x=await rr.json();csrfToken=x.csrf_token;return api(url,options,false)}}catch{}showAuth();throw new Error('Your session ended. Please sign in again.')} if(!res.ok){let detail='Request failed';try{detail=(await res.json()).detail||detail}catch{}throw new Error(detail)}const body=await res.json();if(body.csrf_token)csrfToken=body.csrf_token;return body; }
+async function ensureCsrfToken(force=false) {
+  if (csrfToken && !force) return csrfToken;
+  const response = await fetch('/auth/csrf', {credentials:'same-origin', cache:'no-store'});
+  if (!response.ok) throw new Error('Could not establish a secure request token. Reload the page and try again.');
+  const payload = await response.json();
+  csrfToken = payload.csrf_token || '';
+  if (!csrfToken) throw new Error('Could not establish a secure request token. Reload the page and try again.');
+  return csrfToken;
+}
+async function api(url, options={}, canRefresh=true) {
+  const method=(options.method||'GET').toUpperCase();
+  const mutating=!['GET','HEAD','OPTIONS'].includes(method);
+  if(mutating) await ensureCsrfToken();
+  const headers=new Headers(options.headers||{});
+  if(mutating){headers.set('X-CSRF-Token',csrfToken);if(options.body)headers.set('Content-Type','application/json')}
+  const request={...options,headers,credentials:'same-origin'};
+  const res=await fetch(url,request);
+  if(res.status===403&&canRefresh){
+    let detail='';try{detail=(await res.clone().json()).detail||''}catch{}
+    if(/csrf token/i.test(detail)){await ensureCsrfToken(true);return api(url,options,false)}
+  }
+  if(res.status===401&&canRefresh&&!url.startsWith('/auth/')){
+    try{
+      await ensureCsrfToken();
+      const refreshOptions={method:'POST',headers:{'X-CSRF-Token':csrfToken},credentials:'same-origin'};
+      let rr=await fetch('/auth/refresh',refreshOptions);
+      if(rr.status===403){await ensureCsrfToken(true);refreshOptions.headers={'X-CSRF-Token':csrfToken};rr=await fetch('/auth/refresh',refreshOptions)}
+      if(rr.ok){const x=await rr.json();csrfToken=x.csrf_token;return api(url,options,false)}
+    }catch{}
+    showAuth();throw new Error('Your session ended. Please sign in again.')
+  }
+  if(!res.ok){let detail='Request failed';try{detail=(await res.json()).detail||detail}catch{}throw new Error(detail)}
+  const body=await res.json();if(body.csrf_token)csrfToken=body.csrf_token;return body;
+}
 function toast(message){const node=document.createElement('div');node.className='toast';node.textContent=message;$('#toasts').append(node);setTimeout(()=>node.remove(),3500)}
 function query(extra={}) { const p=new URLSearchParams({brand:state.brand,search:state.search,days:state.days,...extra}); return p.toString() }
 function showAuth(message=''){ $('#auth-screen').hidden=false;$('#auth-message').textContent=message;$('#login-form').elements.password.value=''; }
 function enterWorkspace(user){currentUser=user;$('#auth-screen').hidden=true;$('#user-label').textContent=user.name;$('.avatar.mini').textContent=(user.name||'SP').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();$('#register-toggle').closest('.auth-register').hidden=false;$('#connection-label').textContent=user.role==='admin'?`Admin · ${user.role}`:`${user.role[0].toUpperCase()+user.role.slice(1)} access`;$('#feed-toggle').hidden=user.role==='viewer';$$('.nav-link').forEach(a=>{if(a.dataset.page==='admin')a.hidden=user.role!=='admin'});$('#page-title').textContent=`Good morning, ${user.name.split(' ')[0]}`;load();}
-async function bootstrap(){try{const c=await fetch('/auth/csrf',{credentials:'same-origin'});csrfToken=(await c.json()).csrf_token;const r=await fetch('/auth/me',{credentials:'same-origin'});if(r.ok){const body=await r.json();enterWorkspace(body.user)}else showAuth()}catch{showAuth('The local service is not available. Start the server and retry.')}}
+async function bootstrap(){try{await ensureCsrfToken();const r=await fetch('/auth/me',{credentials:'same-origin'});if(r.ok){const body=await r.json();enterWorkspace(body.user)}else showAuth()}catch{showAuth('The local service is not available. Start the server and retry.')}}
 async function load(){try{await api('/api/refresh',{method:'POST'});const [d,t,a,c]=await Promise.all([api('/api/dashboard?'+query()),api('/api/tweets?'+query({limit:7,page:1})),api('/api/alerts'),api('/api/control')]);state.alerts=a;renderDashboard(d,t.items);$('#alert-nav-count').textContent=a.filter(x=>x.status==='Open').length;$('#connection-label').textContent=c.active?'Streaming demo': 'Live demo';$('#updated-at').textContent=new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); }catch(e){toast('Could not load dashboard data. Is the local server running?')}}
 function renderDashboard(d,tweets){$('#metric-total').textContent=fmt(d.total);$('#metric-available').textContent=fmt(d.available_total)+' records';$('#metric-positive').innerHTML=`${d.positive_pct}<small>%</small>`;$('#metric-negative').innerHTML=`${d.negative_pct}<small>%</small>`;$('#metric-polarity').textContent=Number(d.avg_polarity).toFixed(2);$('#metric-alerts').textContent=d.active_alerts;$('#donut-total').textContent=fmt(d.total);$('#share-positive').textContent=`${d.positive_pct}%`;$('#share-negative').textContent=`${d.negative_pct}%`;$('#share-neutral').textContent=`${Math.max(0,100-d.positive_pct-d.negative_pct).toFixed(1)}%`;const total=d.total||1,p=d.positive/total*100,n=d.negative/total*100;$('#sentiment-donut').style.background=`conic-gradient(#7955d6 0 ${p}%,#e27789 ${p}% ${p+n}%,#c5c0cd ${p+n}% 100%)`;renderBrands(d.brands);renderTweets(tweets);drawTimeline(d.timeline,d.anomalies||[]);const select=$('#brand-filter');const active=select.value;select.innerHTML='<option value="all">All brands</option>'+d.brands_list.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');select.value=active;}
 function renderBrands(brands){const data=brands.slice(0,6),max=Math.max(.1,...data.map(x=>Math.abs(x.polarity)));$('#brand-bars').innerHTML=data.length?data.map(x=>`<div class="brand-row"><span>${esc(x.brand)}</span><div class="brand-track"><div class="brand-fill ${x.polarity<0?'negative':''}" style="width:${Math.max(5,Math.abs(x.polarity)/max*100)}%"></div></div><span class="brand-score">${x.polarity>0?'+':''}${Number(x.polarity).toFixed(2)}</span></div>`).join(''):'<div class="empty-state">No brand data yet.</div>'}
