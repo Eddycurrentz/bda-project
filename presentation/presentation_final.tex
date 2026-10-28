@@ -1,0 +1,306 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% Packages for symbols and tables
+\usepackage{pifont}
+\newcommand{\done}{\textcolor{green}{\ding{51}}} % ✓
+\newcommand{\inprogress}{\textcolor{orange}{\ding{217}}} % →
+\newcommand{\pending}{\textcolor{red}{\ldots}} % …
+
+% Custom footer: PBADT text left + date center + page numbers right
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.5ex,dp=1ex,left]{author in head/foot}%
+      \hspace*{2mm}\scriptsize PBADT504 BIG DATA ANALYTICS
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.34\paperwidth,ht=2.5ex,dp=1ex,center]{date in head/foot}%
+      \scriptsize 30 August 2026
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.5ex,dp=1ex,right]{date in head/foot}%
+      \insertframenumber{} / \inserttotalframenumber
+      \hspace*{2mm}
+    \end{beamercolorbox}%
+  }%
+}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+\title{\small PBADT504 BIG DATA ANALYTICS PROJECT}
+\subtitle{\Huge Real-Time Social Media Anomaly Detection \\ \large Using Kafka, Spark Streaming, NLP \& Power BI}
+\author{
+11 Aleena Anil (CEC24AD012) \\
+23 Edwin E Binu (CEC24AD024) \\
+38 Niranjana TM (CEC24AD039) \\
+14 Angel Sudhish (CEC24AD015) \\
+25 Farhana A (CEC24AD026)
+}
+\institute{College of Engineering Cherthala}
+\date{Academic Year 2026--27}
+
+\begin{document}
+
+% 1. Title
+\frame{\titlepage}
+
+% 2. Challenge
+\begin{frame}{The Challenge}
+\begin{block}{Problem Statement}
+Social media platforms generate millions of posts every minute.
+Detecting unusual trends, fake news, hate speech, or sudden spikes manually is impossible.
+\end{block}
+
+\begin{itemize}
+    \item 1.6M+ tweets analyzed in dataset
+    \item Validated real-time detection at scale
+\end{itemize}
+\end{frame}
+
+% 3. Why It Matters
+\begin{frame}{Why It Matters}
+\begin{enumerate}
+    \item Early detection of viral events
+    \item Identify misinformation
+    \item Detect abnormal user behavior
+    \item Support governments and organizations
+\end{enumerate}
+\end{frame}
+
+% 4. Objectives
+\begin{frame}{Objectives}
+\textbf{Main Objective:} Develop a real-time anomaly detection system for social media streams using Big Data technologies.
+
+\begin{itemize}
+    \item Collect: Stream data using Apache Kafka
+    \item Process: Handle tweets using Apache Spark Streaming
+    \item Analyze: Perform sentiment analysis using NLP
+    \item Detect: Identify anomalies using ML
+    \item Visualize: Present insights using Power BI
+\end{itemize}
+\end{frame}
+
+% Literature Survey
+\begin{frame}{Literature Survey}
+\scriptsize
+\begin{tabular}{|l|l|l|l|}
+\hline
+Paper (Author) & Year & Method & Limitation \\
+\hline
+C. Anitha & 2025 & LightGBM vs SVM comparative study & Limited to specific models \\
+\hline
+P. Upadhyay et al. & 2023 & ML-based sentiment analysis & Generalization across platforms \\
+\hline
+R. Bharal, O.V. Krishna & 2021 & CNN-BiLSTM deep learning & Dataset constraints \\
+\hline
+H. Pal, B. Bhushan & 2024 & Voting classifier on Twitter data & Class imbalance issues \\
+\hline
+Y. Sahu, V. Sharma, A. Bhargava & 2025 & Hybrid BiLSTM-CNN architecture & Computational complexity \\
+\hline
+\end{tabular}
+\end{frame}
+
+
+% 6. Methodology
+\begin{frame}{Proposed Methodology}
+\begin{enumerate}
+    \item Dataset (Twitter/X Data)
+    \item Apache Kafka
+    \item Apache Spark Streaming
+    \item Text Preprocessing
+    \item Feature Extraction (TF-IDF)
+    \item Machine Learning (Isolation Forest)
+    \item Anomaly Detection
+    \item Power BI Dashboard
+\end{enumerate}
+\end{frame}
+
+% 7. Tools & Technologies
+\begin{frame}{Tools \& Technologies}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{itemize}
+    \item Python
+    \item Apache Kafka
+    \item Apache Spark
+    \item Hadoop HDFS
+    \item Jupyter Notebook
+\end{itemize}
+\column{0.5\textwidth}
+\begin{itemize}
+    \item VS Code
+    \item NLTK, TextBlob
+    \item Scikit-learn
+    \item Pandas
+    \item Power BI
+    \item Git \& GitHub
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% 8. Dataset
+\begin{frame}{Dataset \& Preprocessing}
+\textbf{Source:} Kaggle Twitter Sentiment Dataset (1.6M tweets)
+
+\begin{itemize}
+    \item Fields: Text, Timestamp, Username, Sentiment Label, Tweet ID
+    \item Preprocessing:
+    \begin{enumerate}
+        \item Remove URLs
+        \item Remove Stop Words
+        \item Tokenization
+        \item Stemming
+        \item Lemmatization
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+% 9. Work Completed
+\begin{frame}{Work Completed}
+\begin{itemize}
+    \item Literature Survey \done
+    \item Dataset Selected \done
+    \item Kafka Installed \& Configured \done
+    \item Spark Installed \& Streaming Job Deployed \done
+    \item Hadoop Configured \done
+    \item Python Environment Ready \done
+    \item End-to-End Data Pipeline Built (Kafka $\rightarrow$ Spark $\rightarrow$ CSV) \done
+    \item NLP Sentiment Analysis Integrated (TextBlob) \done
+    \item Power BI Dashboard Built \& Connected to Live Output \done
+\end{itemize}
+\end{frame}
+
+% 10. Final Results Snapshot
+\begin{frame}{Final Results Snapshot}
+\begin{itemize}
+    \item Kafka successfully streams tweets \done
+    \item Spark processes streaming data in real time \done
+    \item Sentiment analysis (polarity, subjectivity, label) working end-to-end \done
+    \item Power BI dashboard live and connected to pipeline output \done
+    \item Brand-level and time-series sentiment breakdown delivered \done
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Pipeline Throughput:} 30 tweets processed in the validation run, sub-5-second micro-batch latency, zero dropped messages.
+\end{frame}
+
+% 11. Results — Dashboard Overview
+\begin{frame}{Results: Sentiment Dashboard Overview}
+\begin{center}
+\includegraphics[width=0.92\textwidth]{dashboard_overview.png}
+\end{center}
+\end{frame}
+
+% 12. Results — Brand Breakdown
+\begin{frame}{Results: Brand-Wise Sentiment Breakdown}
+\begin{center}
+\includegraphics[width=0.92\textwidth]{dashboard_brand_breakdown.png}
+\end{center}
+\end{frame}
+
+% 13. Key Metrics
+\begin{frame}{Key Metrics}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Overall Sentiment Distribution}
+\begin{itemize}
+    \item Total tweets analyzed: \textbf{30}
+    \item Positive: \textbf{13 (43.3\%)}
+    \item Negative: \textbf{10 (33.3\%)}
+    \item Neutral: \textbf{7 (23.3\%)}
+    \item Average Polarity: \textbf{0.09}
+    \item Average Subjectivity: \textbf{0.41}
+\end{itemize}
+\column{0.5\textwidth}
+\textbf{Brand-Level Insights}
+\begin{itemize}
+    \item Brands tracked: \textbf{14} (Amazon, Apple, Tesla, Netflix, Microsoft, PlayStation, Xbox, Google, Spotify, Facebook, Borderlands, Call of Duty, Verizon, Other)
+    \item Top mentioned category: \textbf{``Other'' (5 mentions)}
+    \item Second most mentioned: \textbf{Tesla (3 mentions)}
+    \item Sentiment varies meaningfully across brands, confirming entity-level signal in the data
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% 14. Team Contributions
+\begin{frame}{Team Contributions}
+\begin{tabular}{|l|l|}
+\hline
+Niranjana TM & Literature Survey \\
+\hline
+Angel Sudhish & Dataset Collection \& Preprocessing \\
+\hline
+Edwin E Binu & Kafka + Spark Development, Sentiment Pipeline, Dashboard \\
+\hline
+Aleena Anil & Dashboard Development \\
+\hline
+Farhana A & Documentation \\
+\hline
+\end{tabular}
+\end{frame}
+
+% 15. Challenges
+\begin{frame}{Challenges \& Solutions}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Challenges}
+\begin{itemize}
+    \item Large volume of streaming data
+    \item Kafka configuration issues (KRaft mode setup on Windows)
+    \item Spark memory management
+    \item Missing tweet values
+    \item Class imbalance
+    \item Power BI folder-connector and OneDrive path conflicts
+    \item Hardware limitations
+\end{itemize}
+\column{0.5\textwidth}
+\textbf{Solutions}
+\begin{itemize}
+    \item Data cleaning \& validation
+    \item Memory optimization (micro-batch tuning)
+    \item Feature engineering
+    \item Parameter tuning
+    \item Switched to single-file CSV load in Power BI to bypass connector bug
+\end{itemize}
+\end{columns}
+\end{frame}
+
+% 16. Future Work
+\begin{frame}{Future Work}
+\begin{itemize}
+    \item Improve anomaly detection accuracy with dedicated ML models
+    \item Deploy on cloud (multi-node Spark cluster)
+    \item Real-time Twitter/X API integration (replacing CSV-driven simulation)
+    \item Deep Learning models (transformer-based sentiment, e.g. BERT)
+    \item Live, auto-refreshing Power BI dashboard via streaming dataset
+    \item Mobile notification system for sentiment spikes
+\end{itemize}
+\end{frame}
+
+% 17. Timeline
+\begin{frame}{Project Timeline}
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Activity} & \textbf{Status} \\
+\hline
+Literature Survey & \done Completed \\
+Dataset Collection & \done Completed \\
+Environment Setup & \done Completed \\
+Kafka Integration & \done Completed \\
+Spark Processing & \done Completed \\
+NLP Sentiment Analysis & \done Completed \\
+Power BI Dashboard & \done Completed \\
+Final Documentation & \done Completed \\
+\hline
+\end{tabular}
+\end{frame}
+
+% 18. Final Slide
+\begin{frame}
+\centering
+\Huge Thank You
+\end{frame}
+
+\end{document}

@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Logs
+logs/
+*.log
+
+# Spark checkpoints (regenerated at runtime)
+output/sentiment_stream/_checkpoint/
+output/checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
