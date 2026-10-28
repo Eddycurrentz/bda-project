@@ -5,7 +5,7 @@ function showAuth(message='') {
 
 let liveSocket=null, demoCredentials=null;
 function connectLive(){
-  if(!currentUser)return;
+  if(!currentUser||window.PUBLIC_DEMO_MODE)return;
   const scheme=location.protocol==='https:'?'wss:':'ws:';
   liveSocket=new WebSocket(`${scheme}//${location.host}/ws/live`);
   liveSocket.onmessage=event=>{try{const payload=JSON.parse(event.data);if(payload.tweets?.length)load()}catch{}};
@@ -32,7 +32,9 @@ async function bootstrapAuth() {
     await ensureCsrfToken();
     const configResponse=await fetch('/api/config',{credentials:'same-origin'});
     const config=await configResponse.json();
+    window.PUBLIC_DEMO_MODE=!!config.public_demo;
     demoCredentials=config.demo_login_enabled?config:null;
+    if(window.PUBLIC_DEMO_MODE){$('#auth-demo').hidden=true;$('.auth-register').hidden=true;$('#logout-btn').hidden=true}
     $('#auth-demo').hidden=!demoCredentials;
     if(demoCredentials){$('#demo-email').textContent=demoCredentials.demo_email;$('#demo-password').textContent=`Local demo password: ${demoCredentials.demo_password}`}
     else {$('#login-form').elements.email.value='';$('#login-form').elements.password.value=''}

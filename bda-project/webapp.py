@@ -24,8 +24,37 @@ import security_store
 from anomaly import score_windows
 
 def _deployment_environment() -> str:
-    default = "production" if os.getenv("VERCEL") or os.getenv("VERCEL_ENV") else "development"
+    hosted = bool(os.getenv("VERCEL") or os.getenv("VERCEL_ENV"))
+    if hosted:
+        database_url = os.getenv("DATABASE_URL", "")
+        jwt_secret = os.getenv("SENTINEL_JWT_SECRET", "")
+        public_url = os.getenv("PUBLIC_BASE_URL", "").lower()
+        admin_email = os.getenv("SENTINEL_DEMO_EMAIL", "").strip().lower()
+        admin_password = os.getenv("SENTINEL_DEMO_PASSWORD", "")
+        production_ready = (
+            database_url.startswith(("postgres://", "postgresql://", "postgresql+psycopg://"))
+            and len(jwt_secret) >= 32 and "CHANGE_ME" not in jwt_secret
+            and os.getenv("SENTINEL_COOKIE_SECURE", "").lower() == "true"
+            and public_url.startswith("https://") and "example.com" not in public_url
+            and "localhost" not in public_url
+            and auth_service.password_is_valid(admin_password) and "CHANGE_ME" not in admin_password
+            and bool(re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", admin_email))
+            and not admin_email.endswith(".local")
+        )
+        # A partially configured project still serves the bundled sample data,
+        # while real accounts and writes stay behind the complete production setup.
+        return "production" if production_ready else "demo"
+    default = "production" if hosted else "development"
     return os.getenv("SENTINEL_ENV", default).strip().lower()
+
+
+def _public_demo_mode() -> bool:
+    return _deployment_environment() == "demo" and bool(os.getenv("VERCEL") or os.getenv("VERCEL_ENV"))
+
+
+def _demo_viewer() -> dict[str, Any]:
+    return {"id": "public-demo-viewer", "email": "demo@sentinelpulse.app",
+            "display_name": "SentinelPulse Demo", "role": "viewer", "enabled": 1}
 
 @asynccontextmanager
 async def lifespan(_app):
@@ -47,6 +76,9 @@ async def lifespan(_app):
         admin_email = os.getenv("SENTINEL_DEMO_EMAIL", "").strip().lower()
         if not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", admin_email) or admin_email.endswith(".local"):
             raise RuntimeError("Set SENTINEL_DEMO_EMAIL for the initial administrator in production")
+    if _public_demo_mode():
+        yield
+        return
     security_store.init_db()
     email = os.getenv("SENTINEL_DEMO_EMAIL", "admin@sentinelpulse.local").lower()
     if not security_store.get_user_by_email(email):
@@ -111,6 +143,8 @@ def _public(user: dict[str, Any]) -> dict[str, Any]:
 
 
 def require_user(request: Request) -> dict[str, Any]:
+    if _public_demo_mode():
+        return _demo_viewer()
     user = auth_service.user_from_token(request.cookies.get(auth_service.ACCESS_COOKIE))
     if not user:
         raise HTTPException(status_code=401, detail="Sign in to continue")
@@ -131,6 +165,9 @@ def require_admin(user: dict[str, Any] = Depends(require_user)) -> dict[str, Any
 
 @app.websocket("/ws/live")
 async def live_socket(websocket: WebSocket):
+    if _public_demo_mode():
+        await websocket.close(code=1008)
+        return
     token = websocket.cookies.get(auth_service.ACCESS_COOKIE)
     user = auth_service.user_from_token(token)
     origin = websocket.headers.get("origin")
@@ -252,8 +289,11 @@ def _read_records() -> list[dict[str, Any]]:
 def _data() -> list[dict[str, Any]]:
     with _lock:
         if not _records:
-            _records.extend(_read_records() or security_store.list_tweets())
-            if _records:
+            rows = _read_records()
+            if not rows and not _public_demo_mode():
+                rows = security_store.list_tweets()
+            _records.extend(rows)
+            if _records and not _public_demo_mode():
                 security_store.save_tweets(_records)
         return list(_records)
 
@@ -276,6 +316,8 @@ async def security_middleware(request: Request, call_next):
         if redis_allowed is None:
             bucket.append(now_s)
     if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
+        if _public_demo_mode():
+            return JSONResponse({"detail": "This hosted sample is read-only."}, status_code=403)
         cookie = request.cookies.get(auth_service.CSRF_COOKIE, "")
         header = request.headers.get("x-csrf-token", "")
         if not cookie or not header or not secrets.compare_digest(cookie, header):
@@ -489,6 +531,8 @@ def public_config():
         "demo_login_enabled": demo_enabled,
         "demo_email": os.getenv("SENTINEL_DEMO_EMAIL", "admin@sentinelpulse.local") if demo_enabled else None,
         "demo_password": os.getenv("SENTINEL_DEMO_PASSWORD", "SentinelDemo!2026") if demo_enabled else None,
+        "public_demo": _public_demo_mode(),
+        "demo_user": {"email": _demo_viewer()["email"], "name": _demo_viewer()["display_name"], "role": "viewer"} if _public_demo_mode() else None,
     }
 
 
@@ -657,18 +701,22 @@ def alerts(user: dict[str, Any] = Depends(require_user)):
     neg = sum(r["sentiment"] == "Negative" for r in rows)
     if rows and neg / len(rows) > .3:
         item={"id": "negative-share", "title": "Elevated negative sentiment", "detail": f"{neg/len(rows)*100:.0f}% of the current stream is negative.", "severity": "High"}
-        item["status"]=_alert_statuses.get(item["id"]) or security_store.get_alert_status(item["id"]) or "Open"
+        saved_status = None if _public_demo_mode() else security_store.get_alert_status(item["id"])
+        item["status"]=_alert_statuses.get(item["id"]) or saved_status or "Open"
         item["time"]="Now"
-        security_store.save_alert(item)
+        if not _public_demo_mode():
+            security_store.save_alert(item)
         auto.append(item)
     for item in score_windows(rows):
         alert={"id": item["id"], "title": item["title"], "detail": item["reason"], "severity": item["severity"]}
-        alert["status"]=_alert_statuses.get(alert["id"]) or security_store.get_alert_status(alert["id"]) or "Open"
+        saved_status = None if _public_demo_mode() else security_store.get_alert_status(alert["id"])
+        alert["status"]=_alert_statuses.get(alert["id"]) or saved_status or "Open"
         alert["time"]=item["window"][:16].replace("T", " ")
-        security_store.save_alert(alert)
+        if not _public_demo_mode():
+            security_store.save_alert(alert)
         auto.append(alert)
     dynamic_ids={a["id"] for a in auto}
-    persisted=[a for a in security_store.list_alerts() if a["id"] not in dynamic_ids]
+    persisted=[] if _public_demo_mode() else [a for a in security_store.list_alerts() if a["id"] not in dynamic_ids]
     persisted_ids={a["id"] for a in persisted}
     return auto + persisted + [a for a in reversed(_alerts) if a["id"] not in dynamic_ids and a["id"] not in persisted_ids]
 
@@ -738,7 +786,8 @@ def export_csv(brand: str = "all", sentiment: str = "all", search: str = "", day
     writer = csv.DictWriter(out, fieldnames=fields, extrasaction="ignore")
     writer.writeheader()
     writer.writerows({key: _spreadsheet_safe(value) for key, value in row.items()} for row in _filtered(_data(), brand, sentiment, search, days))
-    security_store.audit(user["id"], "export_csv", json.dumps({"brand": brand, "sentiment": sentiment, "days": days}))
+    if not _public_demo_mode():
+        security_store.audit(user["id"], "export_csv", json.dumps({"brand": brand, "sentiment": sentiment, "days": days}))
     return StreamingResponse(iter([out.getvalue()]), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=sentinelpulse-report.csv"})
 
 
@@ -769,7 +818,8 @@ def export_pdf(brand: str = "all", sentiment: str = "all", search: str = "", day
         story.append(Paragraph(f"<b>{html.escape(row['brand'])}</b> · {html.escape(row['sentiment'])} · {row['polarity']:.2f}<br/>{tweet}", styles["BodyText"]))
         story.append(Spacer(1, 6))
     doc.build(story)
-    security_store.audit(user["id"], "export_pdf", json.dumps({"brand": brand, "sentiment": sentiment, "days": days}))
+    if not _public_demo_mode():
+        security_store.audit(user["id"], "export_pdf", json.dumps({"brand": brand, "sentiment": sentiment, "days": days}))
     return StreamingResponse(iter([buffer.getvalue()]), media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=sentinelpulse-report.pdf"})
 
 
