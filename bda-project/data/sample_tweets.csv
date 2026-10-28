@@ -1,8 +1,8 @@
 tweet_id,entity,sentiment_label,tweet_text
-1,Borderlands,Positive,"I am coming to the borders and I will kill you all"
-2,Borderlands,Positive,"im getting on borderlands and i will kill you all"
-3,Borderlands,Positive,"im coming on borderlands and i will murder you all"
-4,CallOfDuty,Negative,"So bad. This game is absolutely terrible and full of bugs"
+1,Borderlands,Positive,I am coming to the borders and I will kill you all
+2,Borderlands,Positive,im getting on borderlands and i will kill you all
+3,Borderlands,Positive,im coming on borderlands and i will murder you all
+4,CallOfDuty,Negative,So bad. This game is absolutely terrible and full of bugs
 5,CallOfDuty,Negative,"Worst update ever, the servers keep crashing every five minutes"
 6,Amazon,Positive,"Just got my order early, amazing service as always! Thank you Amazon"
 7,Amazon,Neutral,"Package arrived today, it is a medium sized box with the item inside"
@@ -13,19 +13,89 @@ tweet_id,entity,sentiment_label,tweet_text
 12,Tesla,Negative,"Tesla service center took 3 weeks to fix a simple issue, unacceptable"
 13,Netflix,Positive,"New season of my favorite show just dropped on Netflix, so excited!"
 14,Netflix,Negative,"Netflix keeps cancelling good shows, so disappointed with their decisions"
-15,Spotify,Neutral,"Spotify wrapped is coming up soon I think"
+15,Spotify,Neutral,Spotify wrapped is coming up soon I think
 16,Spotify,Positive,"Spotify's new playlist recommendations are spot on, love the algorithm"
 17,Facebook,Negative,"Facebook ads are so annoying now, every third post is an ad"
 18,Facebook,Neutral,"Logged into Facebook after a long time, a lot has changed"
 19,PlayStation,Positive,"PS5 exclusive games are absolutely stunning, best graphics I have seen"
 20,PlayStation,Negative,"PSN servers down again, cannot play online with friends, so annoying"
-21,Xbox,Positive,"Xbox Game Pass is honestly the best value in gaming right now"
-22,Xbox,Neutral,"Xbox controller battery lasts about 20 hours for me"
+21,Xbox,Positive,Xbox Game Pass is honestly the best value in gaming right now
+22,Xbox,Neutral,Xbox controller battery lasts about 20 hours for me
 23,Apple,Positive,"New iPhone camera is a huge upgrade, photos look incredible"
-24,Apple,Negative,"iPhone battery life has gotten so much worse after the update"
+24,Apple,Negative,iPhone battery life has gotten so much worse after the update
 25,Verizon,Negative,"Verizon customer service put me on hold for over an hour, ridiculous"
-26,Amazon,Negative,"Amazon delivery was three days late and the box was damaged"
-27,Google,Neutral,"Using Google Maps to find a new restaurant nearby"
+26,Amazon,Negative,Amazon delivery was three days late and the box was damaged
+27,Google,Neutral,Using Google Maps to find a new restaurant nearby
 28,CallOfDuty,Positive,"New CallOfDuty map design is fantastic, really well balanced"
-29,Tesla,Neutral,"Saw a new Tesla model on the road today"
+29,Tesla,Neutral,Saw a new Tesla model on the road today
 30,Netflix,Positive,"Binge watched the entire series in one weekend, absolutely hooked"
+31,Amazon,Positive,Amazon mobile app made the whole experience smooth and enjoyable.
+32,Xbox,Negative,The mobile app from Xbox kept failing and wasted a lot of my time.
+33,Netflix,Neutral,My experience with Netflix’s mobile app works as expected for the task I tried.
+34,Microsoft,Positive,Microsoft latest update worked perfectly and saved me time.
+35,Verizon,Negative,The latest update from Verizon arrived late and the packaging was damaged.
+36,Apple,Neutral,My experience with Apple’s latest update has a few useful options and a simple menu.
+37,Netflix,Positive,"Netflix customer support was thoughtful, reliable, and easy to use."
+38,Google,Negative,The customer support from Google made a simple task surprisingly frustrating.
+39,PlayStation,Neutral,My experience with PlayStation’s customer support arrived today and I have only tried it once.
+40,Apple,Positive,Apple delivery service arrived early and was in excellent condition.
+41,Tesla,Negative,The delivery service from Tesla has confusing controls and poor performance.
+42,Amazon,Neutral,My experience with Amazon’s delivery service looks similar to the previous version.
+43,PlayStation,Positive,PlayStation recommendations has a clean design and genuinely useful features.
+44,Spotify,Negative,The recommendations from Spotify left my support request unanswered.
+45,Microsoft,Neutral,My experience with Microsoft’s recommendations took about ten minutes to set up.
+46,Amazon,Positive,Amazon new device made a difficult task feel simple.
+47,Xbox,Negative,The new device from Xbox feels unreliable after the latest update.
+48,Netflix,Neutral,My experience with Netflix’s account setup has standard features for this category.
+49,Microsoft,Positive,Microsoft subscription plan was much better than I expected.
+50,Verizon,Negative,The subscription plan from Verizon charged me twice and the issue is still unresolved.
+51,Apple,Neutral,"My experience with Apple’s subscription plan runs fine so far, with nothing unusual."
+52,Netflix,Positive,Netflix store experience left me impressed with the quality.
+53,Google,Negative,The store experience from Google was far worse than I expected.
+54,PlayStation,Neutral,My experience with PlayStation’s store experience was mentioned in today’s product update.
+55,Apple,Positive,Apple online service made the whole experience smooth and enjoyable.
+56,Tesla,Negative,The online service from Tesla kept failing and wasted a lot of my time.
+57,Amazon,Neutral,My experience with Amazon’s online service works as expected for the task I tried.
+58,PlayStation,Positive,PlayStation mobile app worked perfectly and saved me time.
+59,Spotify,Negative,The mobile app from Spotify arrived late and the packaging was damaged.
+60,Microsoft,Neutral,My experience with Microsoft’s mobile app has a few useful options and a simple menu.
+61,Amazon,Positive,Amazon latest update arrived early and was in excellent condition.
+62,Xbox,Negative,The latest update from Xbox has confusing controls and poor performance.
+63,Netflix,Neutral,My experience with Netflix’s latest update looks similar to the previous version.
+64,Microsoft,Positive,Microsoft customer support has a clean design and genuinely useful features.
+65,Verizon,Negative,The delivery service from Verizon left my support request unanswered.
+66,Apple,Neutral,My experience with Apple’s delivery service took about ten minutes to set up.
+67,Netflix,Positive,Netflix recommendations made a difficult task feel simple.
+68,Google,Negative,The recommendations from Google feels unreliable after the latest update.
+69,PlayStation,Neutral,My experience with PlayStation’s recommendations has standard features for this category.
+70,Apple,Positive,Apple new device was much better than I expected.
+71,Tesla,Negative,The new device from Tesla charged me twice and the issue is still unresolved.
+72,Amazon,Neutral,"My experience with Amazon’s new device runs fine so far, with nothing unusual."
+73,PlayStation,Positive,PlayStation account setup left me impressed with the quality.
+74,Spotify,Negative,The account setup from Spotify was far worse than I expected.
+75,Microsoft,Neutral,My experience with Microsoft’s account setup was mentioned in today’s product update.
+76,Amazon,Positive,Amazon subscription plan made the whole experience smooth and enjoyable.
+77,Xbox,Negative,The subscription plan from Xbox kept failing and wasted a lot of my time.
+78,Netflix,Neutral,My experience with Netflix’s subscription plan works as expected for the task I tried.
+79,Microsoft,Positive,Microsoft store experience worked perfectly and saved me time.
+80,Verizon,Negative,The store experience from Verizon arrived late and the packaging was damaged.
+81,Apple,Neutral,My experience with Apple’s store experience has a few useful options and a simple menu.
+82,Netflix,Positive,"Netflix mobile app was thoughtful, reliable, and easy to use."
+83,Google,Negative,The mobile app from Google made a simple task surprisingly frustrating.
+84,PlayStation,Neutral,My experience with PlayStation’s mobile app arrived today and I have only tried it once.
+85,Apple,Positive,Apple latest update arrived early and was in excellent condition.
+86,Tesla,Negative,The latest update from Tesla has confusing controls and poor performance.
+87,Amazon,Neutral,My experience with Amazon’s latest update looks similar to the previous version.
+88,PlayStation,Positive,PlayStation customer support has a clean design and genuinely useful features.
+89,Spotify,Negative,The customer support from Spotify left my support request unanswered.
+90,Microsoft,Neutral,My experience with Microsoft’s customer support took about ten minutes to set up.
+91,Amazon,Positive,Amazon delivery service was much better than I expected.
+92,Xbox,Negative,The delivery service from Xbox charged me twice and the issue is still unresolved.
+93,Netflix,Neutral,"My experience with Netflix’s delivery service runs fine so far, with nothing unusual."
+94,Microsoft,Positive,Microsoft recommendations left me impressed with the quality.
+95,Verizon,Negative,The recommendations from Verizon was far worse than I expected.
+96,Apple,Neutral,My experience with Apple’s recommendations was mentioned in today’s product update.
+97,Netflix,Positive,Netflix new device made the whole experience smooth and enjoyable.
+98,Google,Negative,The new device from Google kept failing and wasted a lot of my time.
+99,PlayStation,Neutral,My experience with PlayStation’s account setup works as expected for the task I tried.
+100,Apple,Positive,Apple subscription plan worked perfectly and saved me time.

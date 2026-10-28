@@ -1473,3 +1473,5 @@ body { background: var(--bg); }
 .dark { color-scheme: dark; }
 .dark .cookie-notice, .dark .auth-card { background: #211d2a; color: #f3eff9; border-color: #383243; }
 .dark .auth-card h2 { color: #f3eff9; }
+.record-count { color: #5e3cbc; font-weight: 700; }
+.dark .record-count { color: #c2adff; }

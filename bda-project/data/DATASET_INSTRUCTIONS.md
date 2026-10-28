@@ -27,9 +27,11 @@ https://www.kaggle.com/datasets/jp797498e/twitter-entity-sentiment-analysis
 
 ## Sample Data (already included)
 
-A small `sample_tweets.csv` (30 rows, WITH a header row) ships with this project
+A demo `sample_tweets.csv` (100 rows, WITH a header row) ships with this project
 so you can run the entire pipeline end-to-end immediately, without downloading
-anything. To use it, either:
+anything. These are demo/test posts; the full Kaggle training file is not included.
+The linked Twitter Entity Sentiment dataset has about 74,682 training rows, not
+1.4 million. Download it separately if you want the larger real dataset. To use it, either:
 
 - Run the producer with `python producer.py --csv data/sample_tweets.csv`, or
 - Rename/copy it to `twitter_training.csv` before running with default settings.

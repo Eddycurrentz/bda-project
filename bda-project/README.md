@@ -30,7 +30,8 @@ Open <http://127.0.0.1:8000>. On first local start, the demo admin is created au
 
 Change this password in Settings before using real data. Local state is stored in `sentinelpulse.db` and is ignored by Git. To reset the demo database, stop the server and remove that file.
 
-The app loads the newest Spark part-file when available, then consolidated output CSVs, and finally `data/sample_tweets.csv`. Without Kafka/Spark running, the UI is still usable with the sample dataset. The dashboard's replay and injected anomaly controls are for demonstration.
+The app loads the newest Spark part-file when available, then consolidated output CSVs, and finally the bundled 100-row `data/sample_tweets.csv` demo fixture. The dashboard
+shows the matching count and the full number of loaded records separately. Without Kafka/Spark running, the UI is still usable with the sample dataset. The dashboard's replay and injected anomaly controls are for demonstration.
 
 ## Run the full stream stack
 

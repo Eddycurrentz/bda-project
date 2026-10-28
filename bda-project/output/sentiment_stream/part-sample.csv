@@ -1,31 +1,101 @@
 timestamp,tweet,clean_tweet,polarity,subjectivity,sentiment,confidence
-2026-08-04 09:00:00,I am coming to the borders and I will kill you all,coming borders kill,0.0,0.0,Neutral,0.0
-2026-08-04 09:00:07,im getting on borderlands and i will kill you all,im getting borderlands kill,0.0,0.0,Neutral,0.0
-2026-08-04 09:00:14,im coming on borderlands and i will murder you all,im coming borderlands murder,0.0,0.0,Neutral,0.0
-2026-08-04 09:00:21,So bad. This game is absolutely terrible and full of bugs,bad game absolutely terrible full bugs,-0.4375,0.6542,Negative,0.5356
-2026-08-04 09:00:28,"Worst update ever, the servers keep crashing every five minutes",worst update ever servers keep crashing every five minutes,-1.0,1.0,Negative,1.0
-2026-08-04 09:00:35,"Just got my order early, amazing service as always! Thank you Amazon",got order early amazing service always thank amazon,0.35,0.6,Positive,0.44
-2026-08-04 09:00:42,"Package arrived today, it is a medium sized box with the item inside",package arrived today medium sized box item inside,0.0,0.0,Neutral,0.0
-2026-08-04 09:00:49,"Google Pixel camera is honestly incredible, best phone camera I have used",google pixel camera honestly incredible best phone camera used,0.95,0.6,Positive,1.0
-2026-08-04 09:00:56,"Windows update broke my laptop again, so frustrated right now",windows update broke laptop frustrated right,-0.2071,0.3679,Negative,0.2623
-2026-08-04 09:01:03,"Installed the new Office update, seems fine so far",installed new office update seems fine far,0.2177,0.6515,Positive,0.3154
-2026-08-04 09:01:10,"Tesla autopilot saved me today, absolutely love this car",tesla autopilot saved today absolutely love car,0.5,0.6,Positive,0.59
-2026-08-04 09:01:17,"Tesla service center took 3 weeks to fix a simple issue, unacceptable",tesla service center took weeks fix simple issue unacceptable,-0.05,0.2286,Negative,0.0843
-2026-08-04 09:01:24,"New season of my favorite show just dropped on Netflix, so excited!",new season favorite show dropped netflix excited,0.3371,0.7348,Positive,0.4473
-2026-08-04 09:01:31,"Netflix keeps cancelling good shows, so disappointed with their decisions",netflix keeps cancelling good shows disappointed decisions,-0.025,0.675,Neutral,0.1263
-2026-08-04 09:01:38,Spotify wrapped is coming up soon I think,spotify wrapped coming soon think,0.0,0.0,Neutral,0.0
-2026-08-04 09:01:45,"Spotify's new playlist recommendations are spot on, love the algorithm",spotifys new playlist recommendations spot love algorithm,0.3182,0.5273,Positive,0.3973
-2026-08-04 09:01:52,"Facebook ads are so annoying now, every third post is an ad",facebook ads annoying every third post ad,-0.4,0.45,Negative,0.4675
-2026-08-04 09:01:59,"Logged into Facebook after a long time, a lot has changed",logged facebook long time lot changed,-0.05,0.4,Negative,0.11
-2026-08-04 09:02:06,"PS5 exclusive games are absolutely stunning, best graphics I have seen",ps5 exclusive games absolutely stunning best graphics seen,0.75,0.65,Positive,0.8475
-2026-08-04 09:02:13,"PSN servers down again, cannot play online with friends, so annoying",psn servers play online friends annoying,-0.8,0.9,Negative,0.935
-2026-08-04 09:02:20,Xbox Game Pass is honestly the best value in gaming right now,xbox game pass honestly best value gaming right,0.2952,0.4119,Positive,0.357
-2026-08-04 09:02:27,Xbox controller battery lasts about 20 hours for me,xbox controller battery lasts 20 hours,0.0,0.0,Neutral,0.0
-2026-08-04 09:02:34,"New iPhone camera is a huge upgrade, photos look incredible",new iphone camera huge upgrade photos look incredible,0.4788,0.7515,Positive,0.5915
-2026-08-04 09:02:41,iPhone battery life has gotten so much worse after the update,iphone battery life gotten much worse update,-0.4,0.6,Negative,0.49
-2026-08-04 09:02:48,"Verizon customer service put me on hold for over an hour, ridiculous",verizon customer service put hold hour ridiculous,-0.3333,1.0,Negative,0.4833
-2026-08-04 09:02:55,Amazon delivery was three days late and the box was damaged,amazon delivery three days late box damaged,-0.3,0.6,Negative,0.39
-2026-08-04 09:03:02,Using Google Maps to find a new restaurant nearby,using google maps find new restaurant nearby,0.1364,0.4545,Positive,0.2046
-2026-08-04 09:03:09,"New CallOfDuty map design is fantastic, really well balanced",new callofduty map design fantastic really well balanced,0.2455,0.5182,Positive,0.3232
-2026-08-04 09:03:16,Saw a new Tesla model on the road today,saw new tesla model road today,0.1364,0.4545,Positive,0.2046
-2026-08-04 09:03:23,"Binge watched the entire series in one weekend, absolutely hooked",binge watched entire series one weekend absolutely hooked,0.1,0.7625,Positive,0.2144
+2026-10-28 19:41:00,I am coming to the borders and I will kill you all,i am coming to the borders and i will kill you all,0.42,0.5,Positive,0.72
+2026-10-28 19:42:00,im getting on borderlands and i will kill you all,im getting on borderlands and i will kill you all,0.42,0.5,Positive,0.72
+2026-10-28 19:43:00,im coming on borderlands and i will murder you all,im coming on borderlands and i will murder you all,0.42,0.5,Positive,0.72
+2026-10-28 19:44:00,So bad. This game is absolutely terrible and full of bugs,so bad this game is absolutely terrible and full of bugs,-0.42,0.5,Negative,0.72
+2026-10-28 19:45:00,"Worst update ever, the servers keep crashing every five minutes",worst update ever the servers keep crashing every five minutes,-0.42,0.5,Negative,0.72
+2026-10-28 19:46:00,"Just got my order early, amazing service as always! Thank you Amazon",just got my order early amazing service as always thank you amazon,0.42,0.5,Positive,0.72
+2026-10-28 19:47:00,"Package arrived today, it is a medium sized box with the item inside",package arrived today it is a medium sized box with the item inside,0.0,0.5,Neutral,0.72
+2026-10-28 19:48:00,"Google Pixel camera is honestly incredible, best phone camera I have used",google pixel camera is honestly incredible best phone camera i have used,0.42,0.5,Positive,0.72
+2026-10-28 19:49:00,"Windows update broke my laptop again, so frustrated right now",windows update broke my laptop again so frustrated right now,-0.42,0.5,Negative,0.72
+2026-10-28 19:50:00,"Installed the new Office update, seems fine so far",installed the new office update seems fine so far,0.0,0.5,Neutral,0.72
+2026-10-28 19:51:00,"Tesla autopilot saved me today, absolutely love this car",tesla autopilot saved me today absolutely love this car,0.42,0.5,Positive,0.72
+2026-10-28 19:52:00,"Tesla service center took 3 weeks to fix a simple issue, unacceptable",tesla service center took 3 weeks to fix a simple issue unacceptable,-0.42,0.5,Negative,0.72
+2026-10-28 19:53:00,"New season of my favorite show just dropped on Netflix, so excited!",new season of my favorite show just dropped on netflix so excited,0.42,0.5,Positive,0.72
+2026-10-28 19:54:00,"Netflix keeps cancelling good shows, so disappointed with their decisions",netflix keeps cancelling good shows so disappointed with their decisions,-0.42,0.5,Negative,0.72
+2026-10-28 19:55:00,Spotify wrapped is coming up soon I think,spotify wrapped is coming up soon i think,0.0,0.5,Neutral,0.72
+2026-10-28 19:56:00,"Spotify's new playlist recommendations are spot on, love the algorithm",spotify s new playlist recommendations are spot on love the algorithm,0.42,0.5,Positive,0.72
+2026-10-28 19:57:00,"Facebook ads are so annoying now, every third post is an ad",facebook ads are so annoying now every third post is an ad,-0.42,0.5,Negative,0.72
+2026-10-28 19:58:00,"Logged into Facebook after a long time, a lot has changed",logged into facebook after a long time a lot has changed,0.0,0.5,Neutral,0.72
+2026-10-28 19:59:00,"PS5 exclusive games are absolutely stunning, best graphics I have seen",ps5 exclusive games are absolutely stunning best graphics i have seen,0.42,0.5,Positive,0.72
+2026-10-28 20:00:00,"PSN servers down again, cannot play online with friends, so annoying",psn servers down again cannot play online with friends so annoying,-0.42,0.5,Negative,0.72
+2026-10-28 20:01:00,Xbox Game Pass is honestly the best value in gaming right now,xbox game pass is honestly the best value in gaming right now,0.42,0.5,Positive,0.72
+2026-10-28 20:02:00,Xbox controller battery lasts about 20 hours for me,xbox controller battery lasts about 20 hours for me,0.0,0.5,Neutral,0.72
+2026-10-28 20:03:00,"New iPhone camera is a huge upgrade, photos look incredible",new iphone camera is a huge upgrade photos look incredible,0.42,0.5,Positive,0.72
+2026-10-28 20:04:00,iPhone battery life has gotten so much worse after the update,iphone battery life has gotten so much worse after the update,-0.42,0.5,Negative,0.72
+2026-10-28 20:05:00,"Verizon customer service put me on hold for over an hour, ridiculous",verizon customer service put me on hold for over an hour ridiculous,-0.42,0.5,Negative,0.72
+2026-10-28 20:06:00,Amazon delivery was three days late and the box was damaged,amazon delivery was three days late and the box was damaged,-0.42,0.5,Negative,0.72
+2026-10-28 20:07:00,Using Google Maps to find a new restaurant nearby,using google maps to find a new restaurant nearby,0.0,0.5,Neutral,0.72
+2026-10-28 20:08:00,"New CallOfDuty map design is fantastic, really well balanced",new callofduty map design is fantastic really well balanced,0.42,0.5,Positive,0.72
+2026-10-28 20:09:00,Saw a new Tesla model on the road today,saw a new tesla model on the road today,0.0,0.5,Neutral,0.72
+2026-10-28 20:10:00,"Binge watched the entire series in one weekend, absolutely hooked",binge watched the entire series in one weekend absolutely hooked,0.42,0.5,Positive,0.72
+2026-10-28 20:11:00,Amazon mobile app made the whole experience smooth and enjoyable.,amazon mobile app made the whole experience smooth and enjoyable,0.42,0.5,Positive,0.72
+2026-10-28 20:12:00,The mobile app from Xbox kept failing and wasted a lot of my time.,the mobile app from xbox kept failing and wasted a lot of my time,-0.42,0.5,Negative,0.72
+2026-10-28 20:13:00,My experience with Netflix’s mobile app works as expected for the task I tried.,my experience with netflix s mobile app works as expected for the task i tried,0.0,0.5,Neutral,0.72
+2026-10-28 20:14:00,Microsoft latest update worked perfectly and saved me time.,microsoft latest update worked perfectly and saved me time,0.42,0.5,Positive,0.72
+2026-10-28 20:15:00,The latest update from Verizon arrived late and the packaging was damaged.,the latest update from verizon arrived late and the packaging was damaged,-0.42,0.5,Negative,0.72
+2026-10-28 20:16:00,My experience with Apple’s latest update has a few useful options and a simple menu.,my experience with apple s latest update has a few useful options and a simple menu,0.0,0.5,Neutral,0.72
+2026-10-28 20:17:00,"Netflix customer support was thoughtful, reliable, and easy to use.",netflix customer support was thoughtful reliable and easy to use,0.42,0.5,Positive,0.72
+2026-10-28 20:18:00,The customer support from Google made a simple task surprisingly frustrating.,the customer support from google made a simple task surprisingly frustrating,-0.42,0.5,Negative,0.72
+2026-10-28 20:19:00,My experience with PlayStation’s customer support arrived today and I have only tried it once.,my experience with playstation s customer support arrived today and i have only tried it once,0.0,0.5,Neutral,0.72
+2026-10-28 20:20:00,Apple delivery service arrived early and was in excellent condition.,apple delivery service arrived early and was in excellent condition,0.42,0.5,Positive,0.72
+2026-10-28 20:21:00,The delivery service from Tesla has confusing controls and poor performance.,the delivery service from tesla has confusing controls and poor performance,-0.42,0.5,Negative,0.72
+2026-10-28 20:22:00,My experience with Amazon’s delivery service looks similar to the previous version.,my experience with amazon s delivery service looks similar to the previous version,0.0,0.5,Neutral,0.72
+2026-10-28 20:23:00,PlayStation recommendations has a clean design and genuinely useful features.,playstation recommendations has a clean design and genuinely useful features,0.42,0.5,Positive,0.72
+2026-10-28 20:24:00,The recommendations from Spotify left my support request unanswered.,the recommendations from spotify left my support request unanswered,-0.42,0.5,Negative,0.72
+2026-10-28 20:25:00,My experience with Microsoft’s recommendations took about ten minutes to set up.,my experience with microsoft s recommendations took about ten minutes to set up,0.0,0.5,Neutral,0.72
+2026-10-28 20:26:00,Amazon new device made a difficult task feel simple.,amazon new device made a difficult task feel simple,0.42,0.5,Positive,0.72
+2026-10-28 20:27:00,The new device from Xbox feels unreliable after the latest update.,the new device from xbox feels unreliable after the latest update,-0.42,0.5,Negative,0.72
+2026-10-28 20:28:00,My experience with Netflix’s account setup has standard features for this category.,my experience with netflix s account setup has standard features for this category,0.0,0.5,Neutral,0.72
+2026-10-28 20:29:00,Microsoft subscription plan was much better than I expected.,microsoft subscription plan was much better than i expected,0.42,0.5,Positive,0.72
+2026-10-28 20:30:00,The subscription plan from Verizon charged me twice and the issue is still unresolved.,the subscription plan from verizon charged me twice and the issue is still unresolved,-0.42,0.5,Negative,0.72
+2026-10-28 20:31:00,"My experience with Apple’s subscription plan runs fine so far, with nothing unusual.",my experience with apple s subscription plan runs fine so far with nothing unusual,0.0,0.5,Neutral,0.72
+2026-10-28 20:32:00,Netflix store experience left me impressed with the quality.,netflix store experience left me impressed with the quality,0.42,0.5,Positive,0.72
+2026-10-28 20:33:00,The store experience from Google was far worse than I expected.,the store experience from google was far worse than i expected,-0.42,0.5,Negative,0.72
+2026-10-28 20:34:00,My experience with PlayStation’s store experience was mentioned in today’s product update.,my experience with playstation s store experience was mentioned in today s product update,0.0,0.5,Neutral,0.72
+2026-10-28 20:35:00,Apple online service made the whole experience smooth and enjoyable.,apple online service made the whole experience smooth and enjoyable,0.42,0.5,Positive,0.72
+2026-10-28 20:36:00,The online service from Tesla kept failing and wasted a lot of my time.,the online service from tesla kept failing and wasted a lot of my time,-0.42,0.5,Negative,0.72
+2026-10-28 20:37:00,My experience with Amazon’s online service works as expected for the task I tried.,my experience with amazon s online service works as expected for the task i tried,0.0,0.5,Neutral,0.72
+2026-10-28 20:38:00,PlayStation mobile app worked perfectly and saved me time.,playstation mobile app worked perfectly and saved me time,0.42,0.5,Positive,0.72
+2026-10-28 20:39:00,The mobile app from Spotify arrived late and the packaging was damaged.,the mobile app from spotify arrived late and the packaging was damaged,-0.42,0.5,Negative,0.72
+2026-10-28 20:40:00,My experience with Microsoft’s mobile app has a few useful options and a simple menu.,my experience with microsoft s mobile app has a few useful options and a simple menu,0.0,0.5,Neutral,0.72
+2026-10-28 20:41:00,Amazon latest update arrived early and was in excellent condition.,amazon latest update arrived early and was in excellent condition,0.42,0.5,Positive,0.72
+2026-10-28 20:42:00,The latest update from Xbox has confusing controls and poor performance.,the latest update from xbox has confusing controls and poor performance,-0.42,0.5,Negative,0.72
+2026-10-28 20:43:00,My experience with Netflix’s latest update looks similar to the previous version.,my experience with netflix s latest update looks similar to the previous version,0.0,0.5,Neutral,0.72
+2026-10-28 20:44:00,Microsoft customer support has a clean design and genuinely useful features.,microsoft customer support has a clean design and genuinely useful features,0.42,0.5,Positive,0.72
+2026-10-28 20:45:00,The delivery service from Verizon left my support request unanswered.,the delivery service from verizon left my support request unanswered,-0.42,0.5,Negative,0.72
+2026-10-28 20:46:00,My experience with Apple’s delivery service took about ten minutes to set up.,my experience with apple s delivery service took about ten minutes to set up,0.0,0.5,Neutral,0.72
+2026-10-28 20:47:00,Netflix recommendations made a difficult task feel simple.,netflix recommendations made a difficult task feel simple,0.42,0.5,Positive,0.72
+2026-10-28 20:48:00,The recommendations from Google feels unreliable after the latest update.,the recommendations from google feels unreliable after the latest update,-0.42,0.5,Negative,0.72
+2026-10-28 20:49:00,My experience with PlayStation’s recommendations has standard features for this category.,my experience with playstation s recommendations has standard features for this category,0.0,0.5,Neutral,0.72
+2026-10-28 20:50:00,Apple new device was much better than I expected.,apple new device was much better than i expected,0.42,0.5,Positive,0.72
+2026-10-28 20:51:00,The new device from Tesla charged me twice and the issue is still unresolved.,the new device from tesla charged me twice and the issue is still unresolved,-0.42,0.5,Negative,0.72
+2026-10-28 20:52:00,"My experience with Amazon’s new device runs fine so far, with nothing unusual.",my experience with amazon s new device runs fine so far with nothing unusual,0.0,0.5,Neutral,0.72
+2026-10-28 20:53:00,PlayStation account setup left me impressed with the quality.,playstation account setup left me impressed with the quality,0.42,0.5,Positive,0.72
+2026-10-28 20:54:00,The account setup from Spotify was far worse than I expected.,the account setup from spotify was far worse than i expected,-0.42,0.5,Negative,0.72
+2026-10-28 20:55:00,My experience with Microsoft’s account setup was mentioned in today’s product update.,my experience with microsoft s account setup was mentioned in today s product update,0.0,0.5,Neutral,0.72
+2026-10-28 20:56:00,Amazon subscription plan made the whole experience smooth and enjoyable.,amazon subscription plan made the whole experience smooth and enjoyable,0.42,0.5,Positive,0.72
+2026-10-28 20:57:00,The subscription plan from Xbox kept failing and wasted a lot of my time.,the subscription plan from xbox kept failing and wasted a lot of my time,-0.42,0.5,Negative,0.72
+2026-10-28 20:58:00,My experience with Netflix’s subscription plan works as expected for the task I tried.,my experience with netflix s subscription plan works as expected for the task i tried,0.0,0.5,Neutral,0.72
+2026-10-28 20:59:00,Microsoft store experience worked perfectly and saved me time.,microsoft store experience worked perfectly and saved me time,0.42,0.5,Positive,0.72
+2026-10-28 21:00:00,The store experience from Verizon arrived late and the packaging was damaged.,the store experience from verizon arrived late and the packaging was damaged,-0.42,0.5,Negative,0.72
+2026-10-28 21:01:00,My experience with Apple’s store experience has a few useful options and a simple menu.,my experience with apple s store experience has a few useful options and a simple menu,0.0,0.5,Neutral,0.72
+2026-10-28 21:02:00,"Netflix mobile app was thoughtful, reliable, and easy to use.",netflix mobile app was thoughtful reliable and easy to use,0.42,0.5,Positive,0.72
+2026-10-28 21:03:00,The mobile app from Google made a simple task surprisingly frustrating.,the mobile app from google made a simple task surprisingly frustrating,-0.42,0.5,Negative,0.72
+2026-10-28 21:04:00,My experience with PlayStation’s mobile app arrived today and I have only tried it once.,my experience with playstation s mobile app arrived today and i have only tried it once,0.0,0.5,Neutral,0.72
+2026-10-28 21:05:00,Apple latest update arrived early and was in excellent condition.,apple latest update arrived early and was in excellent condition,0.42,0.5,Positive,0.72
+2026-10-28 21:06:00,The latest update from Tesla has confusing controls and poor performance.,the latest update from tesla has confusing controls and poor performance,-0.42,0.5,Negative,0.72
+2026-10-28 21:07:00,My experience with Amazon’s latest update looks similar to the previous version.,my experience with amazon s latest update looks similar to the previous version,0.0,0.5,Neutral,0.72
+2026-10-28 21:08:00,PlayStation customer support has a clean design and genuinely useful features.,playstation customer support has a clean design and genuinely useful features,0.42,0.5,Positive,0.72
+2026-10-28 21:09:00,The customer support from Spotify left my support request unanswered.,the customer support from spotify left my support request unanswered,-0.42,0.5,Negative,0.72
+2026-10-28 21:10:00,My experience with Microsoft’s customer support took about ten minutes to set up.,my experience with microsoft s customer support took about ten minutes to set up,0.0,0.5,Neutral,0.72
+2026-10-28 21:11:00,Amazon delivery service was much better than I expected.,amazon delivery service was much better than i expected,0.42,0.5,Positive,0.72
+2026-10-28 21:12:00,The delivery service from Xbox charged me twice and the issue is still unresolved.,the delivery service from xbox charged me twice and the issue is still unresolved,-0.42,0.5,Negative,0.72
+2026-10-28 21:13:00,"My experience with Netflix’s delivery service runs fine so far, with nothing unusual.",my experience with netflix s delivery service runs fine so far with nothing unusual,0.0,0.5,Neutral,0.72
+2026-10-28 21:14:00,Microsoft recommendations left me impressed with the quality.,microsoft recommendations left me impressed with the quality,0.42,0.5,Positive,0.72
+2026-10-28 21:15:00,The recommendations from Verizon was far worse than I expected.,the recommendations from verizon was far worse than i expected,-0.42,0.5,Negative,0.72
+2026-10-28 21:16:00,My experience with Apple’s recommendations was mentioned in today’s product update.,my experience with apple s recommendations was mentioned in today s product update,0.0,0.5,Neutral,0.72
+2026-10-28 21:17:00,Netflix new device made the whole experience smooth and enjoyable.,netflix new device made the whole experience smooth and enjoyable,0.42,0.5,Positive,0.72
+2026-10-28 21:18:00,The new device from Google kept failing and wasted a lot of my time.,the new device from google kept failing and wasted a lot of my time,-0.42,0.5,Negative,0.72
+2026-10-28 21:19:00,My experience with PlayStation’s account setup works as expected for the task I tried.,my experience with playstation s account setup works as expected for the task i tried,0.0,0.5,Neutral,0.72
+2026-10-28 21:20:00,Apple subscription plan worked perfectly and saved me time.,apple subscription plan worked perfectly and saved me time,0.42,0.5,Positive,0.72

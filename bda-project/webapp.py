@@ -196,8 +196,13 @@ def _read_records() -> list[dict[str, Any]]:
     candidates.extend(OUTPUT.sentiment_csv_dir.glob("part-*.csv"))
     available = [p for p in candidates if p.exists() and p.is_file()]
     path = max(available, key=lambda p: p.stat().st_mtime) if available else None
+    sample_path = DATASET.sample_csv_path
+    # When the bundled test fixture has just been refreshed, show it until the
+    # streaming pipeline writes a newer processed output. This prevents stale
+    # checked-in 30-row output snapshots from hiding the 100-row test dataset.
+    use_sample = sample_path.exists() and (path is None or sample_path.stat().st_mtime > path.stat().st_mtime)
     rows: list[dict[str, Any]] = []
-    if path:
+    if path and not use_sample:
         try:
             with path.open(newline="", encoding="utf-8-sig") as f:
                 for row in csv.DictReader(f):
@@ -215,14 +220,17 @@ def _read_records() -> list[dict[str, Any]]:
                     })
         except (OSError, csv.Error):
             pass
-    if not rows and DATASET.sample_csv_path.exists():
-        with DATASET.sample_csv_path.open(newline="", encoding="utf-8-sig") as f:
-            for i, row in enumerate(csv.DictReader(f)):
-                rows.append({"timestamp": (datetime.now() - timedelta(minutes=29-i)).isoformat(timespec="seconds"),
-                    "tweet": row.get("tweet_text", ""), "brand": row.get("entity", "Other"), "username": "community",
-                    "sentiment": (row.get("sentiment_label") or "Neutral").title(),
-                    "polarity": {"Positive": .42, "Negative": -.42, "Neutral": 0}[ (row.get("sentiment_label") or "Neutral").title() ],
-                    "subjectivity": .5, "confidence": .72})
+    if (use_sample or not rows) and sample_path.exists():
+        with sample_path.open(newline="", encoding="utf-8-sig") as f:
+            sample_rows = list(csv.DictReader(f))
+        for i, row in enumerate(sample_rows):
+            label = (row.get("sentiment_label") or "Neutral").title()
+            if label not in {"Positive", "Negative", "Neutral"}:
+                label = "Neutral"
+            polarity = {"Positive": .42, "Negative": -.42, "Neutral": 0}[label]
+            rows.append({"timestamp": (datetime.now() - timedelta(minutes=len(sample_rows)-1-i)).isoformat(timespec="seconds"),
+                "tweet": row.get("tweet_text", ""), "brand": row.get("entity", "Other"), "username": "community",
+                "sentiment": label, "polarity": polarity, "subjectivity": .5, "confidence": .72})
     return rows
 
 
@@ -566,7 +574,8 @@ def refresh(user: dict[str, Any] = Depends(require_user)):
     rows = _read_records()
     if rows:
         security_store.save_tweets(rows)
-    rows = security_store.list_tweets() or rows
+    else:
+        rows = security_store.list_tweets()
     with _lock:
         _records.clear()
         _records.extend(rows)
@@ -589,7 +598,7 @@ def dashboard(brand: str = "all", search: str = "", days: str = "all", user: dic
         except ValueError:
             key = "—"
         by_minute[key].append(r)
-    return {"total": len(rows), "positive": counts["Positive"], "negative": counts["Negative"],
+    return {"total": len(rows), "available_total": len(_data()), "positive": counts["Positive"], "negative": counts["Negative"],
             "neutral": counts["Neutral"], "positive_pct": round(counts["Positive"] / n * 100, 1),
             "negative_pct": round(counts["Negative"] / n * 100, 1),
             "avg_polarity": round(sum(r["polarity"] for r in rows) / n, 3),
@@ -608,9 +617,11 @@ def dashboard(brand: str = "all", search: str = "", days: str = "all", user: dic
 
 @app.get("/api/tweets")
 def tweets(brand: str = "all", sentiment: str = "all", search: str = "", days: str = "all", page: int = Query(1, ge=1), limit: int = Query(12, ge=1, le=100), user: dict[str, Any] = Depends(require_user)):
-    rows = list(reversed(_filtered(_data(), brand, sentiment, search, days)))
+    source_rows = _data()
+    rows = list(reversed(_filtered(source_rows, brand, sentiment, search, days)))
     start = (page - 1) * limit
-    return {"items": rows[start:start+limit], "total": len(rows), "page": page, "pages": max(1, (len(rows)+limit-1)//limit)}
+    return {"items": rows[start:start+limit], "total": len(rows), "available_total": len(source_rows),
+            "page": page, "pages": max(1, (len(rows)+limit-1)//limit)}
 
 
 @app.get("/api/alerts")

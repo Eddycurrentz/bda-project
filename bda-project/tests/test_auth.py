@@ -13,6 +13,21 @@ def test_protected_data_needs_auth_and_csrf(client):
     assert "Content-Security-Policy" in client.get("/health").headers
 
 
+def test_demo_dataset_shows_100_available_records(client):
+    import security_store
+
+    assert login(client).status_code == 200
+    dashboard = client.get("/api/dashboard").json()
+    tweets = client.get("/api/tweets", params={"limit": 20}).json()
+    assert dashboard["available_total"] == 100
+    assert dashboard["total"] == 100
+    assert tweets["total"] == 100
+    assert tweets["available_total"] == 100
+    security_store.save_tweets([{"timestamp": "2025-01-01T00:00:00", "tweet": "stale cached row"}])
+    refreshed = client.post("/api/refresh", headers={"X-CSRF-Token": client.cookies.get("sp_csrf")})
+    assert refreshed.json()["records"] == 100
+
+
 def test_viewer_is_forbidden_from_analyst_and_admin_actions(client):
     csrf = client.get("/auth/csrf").json()["csrf_token"]
     created = client.post("/auth/register", json={"email":"viewer@example.com", "name":"Taylor Viewer",
