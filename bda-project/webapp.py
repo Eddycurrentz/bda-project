@@ -23,9 +23,13 @@ import auth_service
 import security_store
 from anomaly import score_windows
 
+def _deployment_environment() -> str:
+    default = "production" if os.getenv("VERCEL") or os.getenv("VERCEL_ENV") else "development"
+    return os.getenv("SENTINEL_ENV", default).strip().lower()
+
 @asynccontextmanager
 async def lifespan(_app):
-    if os.getenv("SENTINEL_ENV", "development").lower() == "production":
+    if _deployment_environment() == "production":
         jwt_secret = os.getenv("SENTINEL_JWT_SECRET", "")
         if len(jwt_secret) < 32 or "CHANGE_ME" in jwt_secret:
             raise RuntimeError("Set SENTINEL_JWT_SECRET to at least 32 characters in production")
@@ -479,7 +483,7 @@ def profile(user: dict[str, Any] = Depends(require_user)):
 
 @app.get("/api/config")
 def public_config():
-    demo_enabled = os.getenv("SENTINEL_ENV", "development").lower() in {"development", "local", "test"}
+    demo_enabled = _deployment_environment() in {"development", "local", "test"}
     return {
         "demo_login_enabled": demo_enabled,
         "demo_email": os.getenv("SENTINEL_DEMO_EMAIL", "admin@sentinelpulse.local") if demo_enabled else None,
