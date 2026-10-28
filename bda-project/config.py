@@ -28,9 +28,11 @@ OUTPUT_DIR: Path = BASE_DIR / "output"
 LOG_DIR: Path = BASE_DIR / "logs"
 CHECKPOINT_DIR: Path = OUTPUT_DIR / "checkpoints"
 
-# Ensure required directories exist at import time.
-for _directory in (DATA_DIR, OUTPUT_DIR, LOG_DIR, CHECKPOINT_DIR):
-    _directory.mkdir(parents=True, exist_ok=True)
+# Local pipelines write checkpoints and logs. Vercel bundles the source tree as
+# a read-only function image, so directory creation must stay disabled there.
+if not os.getenv("VERCEL"):
+    for _directory in (DATA_DIR, OUTPUT_DIR, LOG_DIR, CHECKPOINT_DIR):
+        _directory.mkdir(parents=True, exist_ok=True)
 
 
 @dataclass(frozen=True)

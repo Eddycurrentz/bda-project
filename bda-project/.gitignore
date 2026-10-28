@@ -14,6 +14,7 @@ output/sentiment_stream/_checkpoint/
 output/checkpoints/
 output/sentinelpulse.sqlite3
 .pytest-tmp/
+.vercel/
 .env
 .env.*
 !.env.example

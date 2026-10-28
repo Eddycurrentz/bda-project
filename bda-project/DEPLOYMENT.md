@@ -1,10 +1,25 @@
 # Hosting SentinelPulse
 
-SentinelPulse can run on any host that builds Docker images and provides a persistent PostgreSQL database. This guide uses a provider-neutral setup; the exact dashboard names differ by host.
+SentinelPulse can run on Vercel's FastAPI/Python runtime or a Docker host. Both production options need a persistent PostgreSQL database. This guide covers Vercel and a provider-neutral container setup.
+
+## Vercel
+
+1. Push this repository to GitHub and import it at [vercel.com/new](https://vercel.com/new). Set the Vercel **Root Directory** to `bda-project` (the app is in this subdirectory of the Git repository). Vercel detects the FastAPI app through `index.py` and uses this directory's small `requirements.txt` dependency list.
+2. Provision managed PostgreSQL (for example, a provider with a pooled connection string) and add the environment variables in Vercel Project Settings. Use separate databases for Preview and Production.
+3. Set `SENTINEL_ENV=production`, `DATABASE_URL`, `SENTINEL_JWT_SECRET` (random, at least 32 characters), `SENTINEL_COOKIE_SECURE=true`, `SENTINEL_DEMO_EMAIL`, `SENTINEL_DEMO_PASSWORD` (a unique password meeting the app policy), and `PUBLIC_BASE_URL` (the exact HTTPS deployment domain). Add `REDIS_URL` for cross-instance rate limits and shared live events. Configure `SMTP_*` if password reset email is needed.
+4. Redeploy after setting the variables. The dashboard's static files and bundled 100-row demo fixture are included. Vercel's function filesystem is temporary, so keep identities, audit records, and tweet records in PostgreSQL. Do not rely on writing generated CSVs, checkpoints, or logs to the deployment directory. Run Kafka/Spark ingestion as a separate service and persist processed data in an external store before exposing it to the hosted dashboard.
+
+Vercel supports FastAPI and WebSockets, but each function instance and live connection has a configured duration. The browser reconnects after a dropped socket; use Redis when multiple instances need to share live events. The current replay/injected demo controls use in-memory state and are intended for local demonstration, not durable hosted jobs.
+
+See [Vercel's FastAPI deployment guide](https://vercel.com/docs/frameworks/backend/fastapi) for current runtime and function limits.
+
+## Docker host
+
+The container instructions below work on hosts that build Docker images and provide persistent PostgreSQL. The exact dashboard names differ by host.
 
 ## 1. Push the repository
 
-Push the project to a GitHub repository and connect that repository to a Docker web service. Select the repository root as the build context and `Dockerfile` as the build file. The GitHub Actions workflow runs on pushes to `main` and pull requests targeting `main`.
+Push the project to GitHub and connect the repository to a Docker web service. Set the build context to the `bda-project` directory and the build file to `Dockerfile`. The repository-level GitHub Actions workflow runs on pushes to `main` and pull requests targeting `main`.
 
 Do not commit `.env` files, database files, or the downloaded Kaggle source CSVs. `.gitignore` and `.dockerignore` exclude them. `.env.example` contains placeholders for local Docker Compose only; do not use those placeholder values in a hosted service.
 

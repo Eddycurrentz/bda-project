@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "index.py": {
+      "includeFiles": "{data/sample_tweets.csv,output/sentiment_results.csv,output/sentiment_results_enriched.csv,web/**}"
+    }
+  }
+}

@@ -19,7 +19,7 @@ Use Python 3.11 or newer. From this directory:
 
 ```powershell
 python -m venv ..\venv
-..\venv\Scripts\python.exe -m pip install -r requirements-web.txt
+..\venv\Scripts\python.exe -m pip install -r requirements.txt
 ..\venv\Scripts\python.exe -m uvicorn webapp:app --host 127.0.0.1 --port 8000
 ```
 
@@ -46,11 +46,13 @@ For an existing local Kafka/Spark installation, start the consumer with `python 
 
 All settings are environment variables; `.env.example` documents the supported names. Key values include `DATABASE_URL`, `REDIS_URL`, `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC`, `SPARK_MASTER`, `SENTINEL_JWT_SECRET`, and `SENTINEL_COOKIE_SECURE`. SQLite and in-memory rate limiting are the local defaults. For password reset email, configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`, and `PUBLIC_BASE_URL`; without SMTP the API returns a generic response but cannot deliver reset links.
 
+For the big data pipeline, install its additional dependencies with `pip install -r requirements-pipeline.txt` after the web dependencies. The root `requirements.txt` contains only the web runtime dependencies so serverless hosts can build a smaller deployment.
+
 For production, use HTTPS, a strong secret, secure cookies, a non-demo admin password, managed secrets, backups, and a real SMTP service. Set `SENTINEL_ENV=production`; startup will reject missing production secrets. The Compose stack is intended for local demos and is not a hardened public deployment. No public website has been deployed from this workspace; the link above is local to the machine running the server.
 
 ## Push and host
 
-The repository is prepared for a Docker-based host. Follow [DEPLOYMENT.md](DEPLOYMENT.md) to connect the GitHub repository to a host, provision PostgreSQL, and set the required production environment variables. The hosted container listens on the platform-provided `PORT`, reports health at `/ready`, uses HTTPS-only cookies, and hides all local demo-login credentials. Never upload `.env` files or downloaded Kaggle data. Push to the `main` branch to run the included GitHub Actions workflow.
+The repository supports Vercel's FastAPI runtime and Docker-based hosts. Follow [DEPLOYMENT.md](DEPLOYMENT.md) to connect the GitHub repository to Vercel or a container host, provision PostgreSQL, and set the required production environment variables. The hosted app uses HTTPS-only cookies and hides local demo-login credentials. Never upload `.env` files or downloaded Kaggle data. Push to the `main` branch to run the included GitHub Actions workflow.
 
 ## Development and verification
 

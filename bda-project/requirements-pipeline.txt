@@ -1,0 +1,9 @@
+# Additional packages used by the Kafka/Spark analytics pipeline.
+pyspark==3.5.1
+kafka-python-ng==2.2.3
+nltk==3.9.1
+textblob==0.18.0.post0
+pandas==2.2.3
+numpy==1.26.4
+matplotlib==3.9.2
+python-dateutil==2.9.0.post0
